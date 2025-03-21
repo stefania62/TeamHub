@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using TeamHub.API.Data;
-using TeamHub.API.Entities;
+using TeamHub.Application.Interfaces;
+using TeamHub.Application.Services;
+using TeamHub.Domain.Entities;
+using TeamHub.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +33,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidIssuer = builder.Configuration["JWT:Issuer"],
@@ -45,6 +47,17 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+
+// Cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy => policy.WithOrigins(builder.Configuration["AllowedOrigins"])
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()); 
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
