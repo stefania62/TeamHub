@@ -31,7 +31,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> CreateProject([FromBody] ProjectModel model)
     {
         if (string.IsNullOrEmpty(model.Name))
@@ -42,7 +42,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> UpdateProject(int id, [FromBody] ProjectModel model)
     {
         if (string.IsNullOrEmpty(model.Name))
@@ -56,7 +56,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteProject(int id)
     {
         var success = await _projectService.DeleteProject(id);
@@ -66,7 +66,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPost("{projectId}/assign/{employeeId}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> AssignEmployeeToProject(int projectId, string employeeId)
     {
         var success = await _projectService.AssignEmployeeToProject(projectId, employeeId);
@@ -76,7 +76,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpDelete("{projectId}/remove/{employeeId}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> RemoveEmployeeFromProject(int projectId, string employeeId)
     {
         var success = await _projectService.RemoveEmployeeFromProject(projectId, employeeId);

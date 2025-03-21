@@ -10,7 +10,7 @@ namespace TeamHub.API.Controllers;
 /// </summary>
 [Route("api/admin")]
 [ApiController]
-[Authorize(Roles = "Admin")] 
+[Authorize(Roles = "Administrator")] 
 public class AdminController : ControllerBase
 {
     private readonly IAdminService _adminService;

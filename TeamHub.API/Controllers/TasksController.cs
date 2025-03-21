@@ -31,7 +31,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Employee,Admin")]
+    [Authorize(Roles = "Employee,Administrator")]
     public async Task<IActionResult> CreateTask([FromBody] TaskModel model)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -43,7 +43,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Employee,Admin")]
+    [Authorize(Roles = "Employee,Administrator")]
     public async Task<IActionResult> UpdateTask(int id, [FromBody] TaskModel model)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -55,7 +55,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteTask(int id)
     {
         var success = await _taskService.DeleteTask(id);
