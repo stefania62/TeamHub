@@ -2,6 +2,7 @@
 
 export const API_BASE_URL = "https://localhost:7073/api";
 
+// Token
 const getAuthHeader = () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -9,6 +10,8 @@ const getAuthHeader = () => {
     }
     return { Authorization: `Bearer ${token}` };
 };
+
+//#region Employee
 
 // Get all employees
 export const getEmployees = async () => {
@@ -39,7 +42,7 @@ export const createEmployee = async (employeeModel) => {
         let formattedError = "";
         if (error.response?.data?.errors) {
             formattedError = Object.values(error.response.data.errors)
-                .flat()  
+                .flat()
                 .join(" ");
         } else {
             formattedError = errorMessage;
@@ -65,7 +68,7 @@ export const updateEmployee = async (employeeModel) => {
         let formattedError = "";
         if (error.response?.data?.errors) {
             formattedError = Object.values(error.response.data.errors)
-                .flat() 
+                .flat()
                 .join(" ");
         } else {
             formattedError = errorMessage;
@@ -74,6 +77,7 @@ export const updateEmployee = async (employeeModel) => {
         throw formattedError;
     }
 };
+
 // Delete employee
 export const deleteEmployee = async (employeeId) => {
     try {
@@ -87,19 +91,35 @@ export const deleteEmployee = async (employeeId) => {
     }
 };
 
+//#endregion
+
+//#region Project
+
+// Get all projects
+export const getProjects = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/projects`, {
+            headers: getAuthHeader()
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
 // Create a new project
 export const createProject = async (projectModel) => {
     try {
         const response = await axios.post(
             `${API_BASE_URL}/projects`,
-            projectModel, 
+            projectModel,
             {
-                headers: getAuthHeader() 
+                headers: getAuthHeader()
             }
         );
-        return response.data; 
+        return response.data;
     } catch (error) {
-        throw error.response.data; 
+        throw error.response.data;
     }
 };
 
@@ -121,21 +141,9 @@ export const updateProject = async (projectId, updatedData) => {
 export const deleteProject = async (projectId) => {
     try {
         await axios.delete(`${API_BASE_URL}/projects/${projectId}`, {
-            headers: getAuthHeader() 
+            headers: getAuthHeader()
         });
         return { success: true };
-    } catch (error) {
-        throw error.response.data;
-    }
-};
-
-// Get all projects
-export const getProjects = async () => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}/projects`, {
-            headers: getAuthHeader() 
-        });
-        return response.data;
     } catch (error) {
         throw error.response.data;
     }
@@ -145,10 +153,9 @@ export const getProjects = async () => {
 export const assignEmployeeToProject = async (projectId, employeeId) => {
     try {
         await axios.post(
-            `${API_BASE_URL}/projects/${projectId}/assign`,
-            { employeeId },
+            `${API_BASE_URL}/projects/${projectId}/assign/${employeeId}`,
             {
-                headers: getAuthHeader() 
+                headers: getAuthHeader()
             }
         );
         return { success: true };
@@ -163,10 +170,26 @@ export const removeEmployeeFromProject = async (projectId, employeeId) => {
         await axios.delete(
             `${API_BASE_URL}/projects/${projectId}/remove/${employeeId}`,
             {
-                headers: getAuthHeader() 
+                headers: getAuthHeader()
             }
         );
         return { success: true };
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+//#endregion
+
+//#region Task
+
+// Get tasks for the authenticated user
+export const getUserTasks = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/tasks`, {
+            headers: getAuthHeader()
+        });
+        return response.data;
     } catch (error) {
         throw error.response.data;
     }
@@ -179,22 +202,10 @@ export const createTask = async (title, projectId, assignedUserId) => {
             `${API_BASE_URL}/tasks`,
             { title, projectId, assignedUserId },
             {
-                headers: getAuthHeader() 
+                headers: getAuthHeader()
             }
         );
         return response.data;
-    } catch (error) {
-        throw error.response.data;
-    }
-};
-
-// Delete a task
-export const deleteTask = async (taskId) => {
-    try {
-        await axios.delete(`${API_BASE_URL}/tasks/${taskId}`, {
-            headers: getAuthHeader() 
-        });
-        return { success: true };
     } catch (error) {
         throw error.response.data;
     }
@@ -207,22 +218,10 @@ export const completeTask = async (taskId) => {
             `${API_BASE_URL}/tasks/${taskId}/complete`,
             {},
             {
-                headers: getAuthHeader() 
+                headers: getAuthHeader()
             }
         );
         return { success: true };
-    } catch (error) {
-        throw error.response.data;
-    }
-};
-
-// Get tasks for the authenticated user
-export const getUserTasks = async () => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}/tasks`, {
-            headers: getAuthHeader() 
-        });
-        return response.data;
     } catch (error) {
         throw error.response.data;
     }
@@ -235,7 +234,7 @@ export const assignTask = async (taskId, employeeId) => {
             `${API_BASE_URL}/tasks/${taskId}/assign`,
             { employeeId },
             {
-                headers: getAuthHeader() 
+                headers: getAuthHeader()
             }
         );
         return { success: true };
@@ -243,3 +242,18 @@ export const assignTask = async (taskId, employeeId) => {
         throw error.response.data;
     }
 };
+
+// Delete a task
+export const deleteTask = async (taskId) => {
+    try {
+        await axios.delete(`${API_BASE_URL}/tasks/${taskId}`, {
+            headers: getAuthHeader()
+        });
+        return { success: true };
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+//#endregion
+
