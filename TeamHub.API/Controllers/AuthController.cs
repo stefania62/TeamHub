@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TeamHub.API.Models;
-using global::TeamHub.API.Interfaces;
+using TeamHub.Application.Interfaces;
+using TeamHub.Application.Models;
 
 namespace TeamHub.API.Controllers
 {

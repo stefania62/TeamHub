@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using TeamHub.API.Entities;
-using TeamHub.API.Models;
+﻿using Microsoft.AspNetCore.Identity;
 using TeamHub.Application.Interfaces;
+using TeamHub.Application.Models;
+using TeamHub.Domain.Entities;
 
 namespace TeamHub.Application.Services;
 public class UserService : IUserService

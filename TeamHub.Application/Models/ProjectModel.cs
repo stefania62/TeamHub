@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TeamHub.Domain.Entities;
 
-namespace TeamHub.API.Models;
+namespace TeamHub.Application.Models;
 
 /// <summary>
 /// Represents a project model.

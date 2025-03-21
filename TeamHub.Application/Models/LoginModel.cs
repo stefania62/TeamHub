@@ -1,11 +1,10 @@
-﻿namespace TeamHub.API.Models
+﻿namespace TeamHub.Application.Models;
+
+/// <summary>
+/// Model for user login request.
+/// </summary>
+public class LoginModel
 {
-    /// <summary>
-    /// Model for user login request.
-    /// </summary>
-    public class LoginModel
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
+    public string Email { get; set; }
+    public string Password { get; set; }
 }

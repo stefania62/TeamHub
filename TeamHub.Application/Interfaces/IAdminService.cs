@@ -1,6 +1,6 @@
-﻿using TeamHub.API.Models;
+﻿using TeamHub.Application.Models;
 
-namespace TeamHub.API.Interfaces;
+namespace TeamHub.Application.Interfaces;
 public interface IAdminService
 {
     Task<List<UserModel>> GetAllUsers();

@@ -1,14 +1,14 @@
-﻿using TeamHub.API.Interfaces;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using TeamHub.API.Entities;
-using TeamHub.API.Models;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using TeamHub.Application.Interfaces;
+using TeamHub.Application.Models;
+using TeamHub.Domain.Entities;
 
-namespace TeamHub.API.Services;
+namespace TeamHub.Application.Services;
 
 public class AuthService : IAuthService
 {

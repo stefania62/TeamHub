@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TeamHub.API.Interfaces;
-using TeamHub.API.Models;
+using TeamHub.Application.Interfaces;
+using TeamHub.Application.Models;
 
 namespace TeamHub.API.Controllers;
 

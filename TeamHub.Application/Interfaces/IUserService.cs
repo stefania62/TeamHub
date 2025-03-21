@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using TeamHub.API.Models;
+﻿using TeamHub.Application.Models;
 
 namespace TeamHub.Application.Interfaces;
 public interface IUserService

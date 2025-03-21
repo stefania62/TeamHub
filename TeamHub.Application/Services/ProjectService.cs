@@ -1,8 +1,8 @@
-﻿using TeamHub.API.Entities;
-using TeamHub.API.Infrastructure.Data;
-using TeamHub.API.Interfaces;
-using TeamHub.API.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using TeamHub.Application.Interfaces;
+using TeamHub.Application.Models;
+using TeamHub.Domain.Entities;
+using TeamHub.Infrastructure.Data;
 
 namespace TeamHub.Application.Services;
 

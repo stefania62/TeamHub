@@ -1,6 +1,6 @@
-﻿using TeamHub.API.Models;
+﻿using TeamHub.Application.Models;
 
-namespace TeamHub.API.Interfaces;
+namespace TeamHub.Application.Interfaces;
 public interface IProjectService
 {
     Task<List<ProjectModel>> GetProjects(string userId, List<string> userRoles);

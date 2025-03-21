@@ -1,4 +1,4 @@
-﻿using TeamHub.API.Models;
+﻿using TeamHub.Application.Models;
 
 namespace TeamHub.Application.Interfaces;
 
