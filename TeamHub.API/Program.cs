@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Bind Settings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<CorsSettings>(builder.Configuration.GetSection("Cors"));
+builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
 
 // Add services to the container.
 builder.Services.AddControllers();

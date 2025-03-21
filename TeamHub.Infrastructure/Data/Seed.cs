@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using TeamHub.Domain.Entities;
+using TeamHub.Infrastructure.Settings;
 
 namespace TeamHub.Infrastructure.Data;
 public static class Seed
@@ -9,6 +11,7 @@ public static class Seed
     {
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var adminSettings = serviceProvider.GetRequiredService<IOptions<AuthSettings>>().Value;
 
         // Ensure roles exist
         string[] roles = { "Administrator", "Employee" };
@@ -22,19 +25,18 @@ public static class Seed
         }
 
         // Create Admin User
-        var adminEmail = "admin@company.com";
-        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+        var adminUser = await userManager.FindByEmailAsync(adminSettings.Email);
 
         if (adminUser == null)
         {
             adminUser = new ApplicationUser
             {
-                UserName = "admin",
-                Email = adminEmail,
-                FullName = "Super Admin"
+                UserName = adminSettings.Username,
+                Email = adminSettings.Email,
+                FullName = adminSettings.FullName
             };
 
-            var result = await userManager.CreateAsync(adminUser, "Admin@123");
+            var result = await userManager.CreateAsync(adminUser, adminSettings.Password);
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(adminUser, "Administrator");
