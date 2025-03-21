@@ -28,6 +28,7 @@ public class AdminService : IAdminService
                 Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
+                Username = user.UserName,
                 Roles = roles.ToList()
             });
         }
@@ -72,17 +73,20 @@ public class AdminService : IAdminService
             Id = user.Id,
             FullName = user.FullName,
             Email = user.Email,
+            Username = user.UserName,
             Roles = new List<string> { "Employee" }
         };
     }
 
-    public async Task<UserModel> UpdateUser(string userId, UserModel model)
+    public async Task<UserModel> UpdateUser(string userId, UserProfile model)
     {
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null) return null;
 
         user.FullName = model.FullName;
         user.Email = model.Email;
+        user.UserName = model.Username;
+
         await _userManager.UpdateAsync(user);
 
         var roles = await _userManager.GetRolesAsync(user);

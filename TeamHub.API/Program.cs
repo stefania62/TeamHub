@@ -62,6 +62,10 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Administrator", policy => policy.RequireRole("Administrator"));
+});
 // Swagger
 builder.Services.AddSwaggerGen(options =>
 {
