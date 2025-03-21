@@ -23,6 +23,10 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "teamhub.ui", "TeamHub.UI\te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.UI", "TeamHub.UI", "{5C8AC467-3F88-4E4E-9036-4EE648A57B2E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Common", "TeamHub.Common\TeamHub.Common.csproj", "{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Common", "TeamHub.Common", "{AC9FB29C-CC95-4032-BDB9-D890997C101A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,10 @@ Global
 		{9C31922B-0794-4567-B191-32F35BCEF49A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C31922B-0794-4567-B191-32F35BCEF49A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9C31922B-0794-4567-B191-32F35BCEF49A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +69,7 @@ Global
 		{6ED0AE69-47E3-4DFC-96EE-0FBD79B410D5} = {5AB9D9DE-E9A9-45EA-9A79-E43B055B2CF6}
 		{BB369CE8-1132-46F5-BB84-383712972E5B} = {3A4E81BB-5604-421E-AEC7-97DB8A1B0D96}
 		{9C31922B-0794-4567-B191-32F35BCEF49A} = {5C8AC467-3F88-4E4E-9036-4EE648A57B2E}
+		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D} = {AC9FB29C-CC95-4032-BDB9-D890997C101A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2E34694B-69E7-4DD8-99EF-D0C1DDD25750}
