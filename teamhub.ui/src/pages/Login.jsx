@@ -1,6 +1,7 @@
 ﻿import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode"; 
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -18,10 +19,21 @@ const Login = () => {
                 password
             });
 
-            localStorage.setItem("token", response.data.token);
-            navigate("/dashboard");
+            const token = response.data.token;
+            // Store token first
+            localStorage.setItem("token", token); 
+
+            // Decode the token and log the role
+            const decoded = jwtDecode(token);
+            const role = decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
+            // Navigate based on role
+            if (role === "Administrator") {
+                navigate("/admin"); 
+            } else {
+                navigate("/dashboard");
+            }
         } catch (err) {
-            console.log(err);
             setError("Invalid email or password. Please try again.");
         }
     };
@@ -59,7 +71,7 @@ const Login = () => {
                     </div>
 
                     <button type="submit" className="btn btn-primary w-100">
-                        Login 
+                        Login
                     </button>
                 </form>
             </div>
