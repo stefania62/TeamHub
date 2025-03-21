@@ -8,6 +8,7 @@ using TeamHub.Application.Interfaces;
 using TeamHub.Application.Services;
 using TeamHub.Domain.Entities;
 using TeamHub.Infrastructure.Data;
+using TeamHub.Infrastructure.Middleware;
 using TeamHub.Infrastructure.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -128,6 +129,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowReactApp");
 app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
