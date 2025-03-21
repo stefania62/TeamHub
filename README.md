@@ -33,5 +33,6 @@ Seeded Admin Account (used during initial startup):
 - Password: Admin@123
 
 Launch the API (TeamHub.API) and React UI (TeamHub.UI) using:
+- dotnet run
 - npm install
 - npm run dev
