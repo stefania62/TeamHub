@@ -54,6 +54,18 @@ public class TasksController : ControllerBase
         return Ok("Task updated successfully.");
     }
 
+    [HttpPut("{id}/complete")]
+    [Authorize(Roles = "Employee,Administrator")]
+    public async Task<IActionResult> CompleteTask(int id, [FromBody] TaskModel model)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+        var success = await _taskService.CompleteTask(id, userId, userRoles);
+        if (!success) return BadRequest("Task update failed.");
+        return Ok("Task updated successfully.");
+    }
+
     [HttpDelete("{id}")]
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteTask(int id)
