@@ -7,8 +7,13 @@ using TeamHub.Application.Interfaces;
 using TeamHub.Application.Services;
 using TeamHub.Domain.Entities;
 using TeamHub.Infrastructure.Data;
+using TeamHub.Infrastructure.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Bind Settings
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+builder.Services.Configure<CorsSettings>(builder.Configuration.GetSection("Cors"));
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -25,6 +30,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 // Configure JWT Authentication
+var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -33,11 +39,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidIssuer = builder.Configuration["JWT:Issuer"],
-            ValidAudience = builder.Configuration["JWT:Audience"]
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience
         };
     });
 
@@ -49,10 +55,11 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 
 // Cors
+var corsSettings = builder.Configuration.GetSection("Cors").Get<CorsSettings>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
-        policy => policy.WithOrigins(builder.Configuration["AllowedOrigins"])
+        policy => policy.WithOrigins(corsSettings.AllowedOrigins)
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials()); 

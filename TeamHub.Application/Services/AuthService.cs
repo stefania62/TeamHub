@@ -1,24 +1,25 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using TeamHub.Application.Interfaces;
 using TeamHub.Application.Models;
 using TeamHub.Domain.Entities;
+using TeamHub.Infrastructure.Settings;
+using Microsoft.Extensions.Options;
 
 namespace TeamHub.Application.Services;
 
 public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IConfiguration _configuration;
+    private readonly JwtSettings _jwtSettings;
 
-    public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+    public AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtSettings> jwtOptions)
     {
         _userManager = userManager;
-        _configuration = configuration;
+        _jwtSettings = jwtOptions.Value;
     }
 
     public async Task<string> AuthenticateUser(LoginModel model)
@@ -33,36 +34,35 @@ public class AuthService : IAuthService
         var userRoles = await _userManager.GetRolesAsync(user);
 
         var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, System.Guid.NewGuid().ToString())
-            };
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
 
         foreach (var role in userRoles)
         {
             authClaims.Add(new Claim(ClaimTypes.Role, role));
         }
 
-        return GenerateJwtToken(authClaims, _configuration);
+        return GenerateJwtToken(authClaims);
     }
 
-    private static string GenerateJwtToken(IEnumerable<Claim> authClaims, IConfiguration configuration)
+    private string GenerateJwtToken(IEnumerable<Claim> authClaims)
     {
-        var secretKey = configuration["JwtSettings:Secret"];
-        if (string.IsNullOrEmpty(secretKey) || secretKey.Length < 32)
+        if (string.IsNullOrEmpty(_jwtSettings.Secret) || _jwtSettings.Secret.Length < 32)
             throw new ArgumentException("JWT secret key must be at least 32 characters long.");
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(authClaims),
-            Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(configuration["JwtSettings:ExpiryMinutes"])),
+            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
             SigningCredentials = credentials,
-            Issuer = configuration["JwtSettings:Issuer"],
-            Audience = configuration["JwtSettings:Audience"]
+            Issuer = _jwtSettings.Issuer,
+            Audience = _jwtSettings.Audience
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -70,4 +70,3 @@ public class AuthService : IAuthService
         return tokenHandler.WriteToken(token);
     }
 }
-
