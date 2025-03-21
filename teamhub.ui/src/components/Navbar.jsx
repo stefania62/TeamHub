@@ -26,7 +26,7 @@ const Navbar = () => {
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/tasks">Tasks</Link>
                                 </li>
-                                {role === "Admin" && (
+                                {role === "Administrator" && (
                                     <li className="nav-item">
                                         <Link className="nav-link" to="/admin">Admin</Link>
                                     </li>

@@ -3,11 +3,10 @@ import { Navigate } from "react-router-dom";
 import { getUserRole } from "../utils/auth";
 
 const ProtectedRoute = ({ element, allowedRoles }) => {
-    const token = localStorage.getItem("token");
-    const role = getUserRole();
+    const role = getUserRole(); 
 
-    if (!token || (allowedRoles && !allowedRoles.includes(role))) {
-        return <Navigate to="/login" replace />;
+    if (!role || !allowedRoles.includes(role)) {
+        return <Navigate to="/login" />;
     }
 
     return element;

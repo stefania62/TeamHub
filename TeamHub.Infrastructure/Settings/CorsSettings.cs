@@ -3,7 +3,7 @@
 /// <summary>
 /// Cors settings.
 /// </summary>
-public class CorsSettings 
+public class CorsSettings
 {
-    public string AllowedOrigins { get; set; }
+    public string[] AllowedOrigins { get; set; }
 }
