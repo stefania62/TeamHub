@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using TeamHub.Application.Interfaces;
 using TeamHub.Application.Services;
 using TeamHub.Domain.Entities;
@@ -12,6 +13,16 @@ using TeamHub.Infrastructure.Middleware;
 using TeamHub.Infrastructure.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Setup Serilog
+builder.Host.UseSerilog((context, services, configuration) =>
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .WriteTo.Console()
+        .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+);
 
 // Bind Settings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));

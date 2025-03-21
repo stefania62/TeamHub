@@ -8,6 +8,7 @@ using TeamHub.Application.Models;
 using TeamHub.Domain.Entities;
 using TeamHub.Infrastructure.Settings;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace TeamHub.Application.Services;
 
@@ -15,23 +16,41 @@ public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly JwtSettings _jwtSettings;
+    private readonly ILogger<AuthService> _logger;
 
-    public AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtSettings> jwtOptions)
+    public AuthService(
+        UserManager<ApplicationUser> userManager,
+        IOptions<JwtSettings> jwtOptions,
+        ILogger<AuthService> logger)
     {
         _userManager = userManager;
         _jwtSettings = jwtOptions.Value;
+        _logger = logger;
     }
 
     public async Task<string> AuthenticateUser(LoginModel model)
     {
         if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
+        {
+            _logger.LogWarning("Invalid login request. Email or password is missing.");
             return null;
+        }
 
         var user = await _userManager.FindByEmailAsync(model.Email);
-        if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+        if (user == null)
+        {
+            _logger.LogWarning("User not found with email: {Email}", model.Email);
             return null;
+        }
+
+        if (!await _userManager.CheckPasswordAsync(user, model.Password))
+        {
+            _logger.LogWarning("Invalid password attempt for user: {Email}", model.Email);
+            return null;
+        }
 
         var userRoles = await _userManager.GetRolesAsync(user);
+        _logger.LogInformation("User authenticated. Generating JWT token for user: {Email}", user.Email);
 
         var authClaims = new List<Claim>
         {
@@ -46,13 +65,25 @@ public class AuthService : IAuthService
             authClaims.Add(new Claim(ClaimTypes.Role, role));
         }
 
-        return GenerateJwtToken(authClaims);
+        try
+        {
+            var token = GenerateJwtToken(authClaims);
+            return token;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error generating JWT token for user: {Email}", user.Email);
+            throw;
+        }
     }
 
     private string GenerateJwtToken(IEnumerable<Claim> authClaims)
     {
         if (string.IsNullOrEmpty(_jwtSettings.Secret) || _jwtSettings.Secret.Length < 32)
+        {
+            _logger.LogError("JWT secret key is missing or too short.");
             throw new ArgumentException("JWT secret key must be at least 32 characters long.");
+        }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
