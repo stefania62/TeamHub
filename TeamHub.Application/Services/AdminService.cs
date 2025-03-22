@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TeamHub.Application.Interfaces;
 using TeamHub.Application.Models;
+using TeamHub.Application.Result;
 using TeamHub.Domain.Entities;
 
 namespace TeamHub.Application.Services;
@@ -18,7 +19,7 @@ public class AdminService : IAdminService
         _logger = logger;
     }
 
-    public async Task<List<UserModel>> GetAllUsers()
+    public async Task<Result<List<UserModel>>> GetAllUsers()
     {
         try
         {
@@ -39,16 +40,16 @@ public class AdminService : IAdminService
             }
 
             _logger.LogInformation("Successfully fetched {Count} users.", userList.Count);
-            return userList;
+            return Result<List<UserModel>>.Ok(userList);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while fetching users.");
-            throw;
+            return Result<List<UserModel>>.Fail("An unexpected error occurred while fetching users.");
         }
     }
 
-    public async Task<UserModel> GetUserById(string userId)
+    public async Task<Result<UserModel>> GetUserById(string userId)
     {
         try
         {
@@ -56,39 +57,39 @@ public class AdminService : IAdminService
             if (user == null)
             {
                 _logger.LogWarning("User not found with ID: {UserId}", userId);
-                return null;
+                return Result<UserModel>.Fail("User not found.");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
-            return new UserModel
+            return Result<UserModel>.Ok(new UserModel
             {
                 Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
                 Username = user.UserName,
                 Roles = roles.ToList()
-            };
+            });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while fetching user with ID: {UserId}", userId);
-            throw;
+            return Result<UserModel>.Fail("An unexpected error occurred while fetching the user.");
         }
     }
 
-    public async Task<UserModel> CreateEmployee(UserModel model)
+    public async Task<Result<UserModel>> CreateEmployee(UserModel model)
     {
         try
         {
             if (await _userManager.FindByEmailAsync(model.Email) != null)
             {
                 _logger.LogWarning("User already exists with email: {Email}", model.Email);
-                return null;
+                return Result<UserModel>.Fail("User email already exists.");
             }
 
             var user = new ApplicationUser
             {
-                UserName = model.Email,
+                UserName = model.Username,
                 Email = model.Email,
                 FullName = model.FullName
             };
@@ -96,30 +97,33 @@ public class AdminService : IAdminService
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
+                var errorMessages = string.Join(", ", result.Errors.Select(e => e.Description));
+
                 _logger.LogWarning("Failed to create employee for email: {Email}. Errors: {Errors}",
-                    model.Email,
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
-                return null;
+                    model.Email, errorMessages);
+
+                return Result<UserModel>.Fail(errorMessages);
             }
 
             await _userManager.AddToRoleAsync(user, "Employee");
 
-            return new UserModel
+            return Result<UserModel>.Ok(new UserModel
             {
                 Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
                 Username = user.UserName,
                 Roles = new List<string> { "Employee" }
-            };
+            });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while creating employee with email: {Email}", model.Email);
-            throw;
+            return Result<UserModel>.Fail("Unexpected error occurred while creating employee.");
         }
     }
-    public async Task<UserModel> UpdateUser(string userId, UserProfile model)
+
+    public async Task<Result<UserModel>> UpdateUser(string userId, UserProfile model)
     {
         try
         {
@@ -127,7 +131,7 @@ public class AdminService : IAdminService
             if (user == null)
             {
                 _logger.LogWarning("User not found for update with ID: {UserId}", userId);
-                return null;
+                return Result<UserModel>.Fail("User not found.");
             }
 
             user.FullName = model.FullName;
@@ -137,31 +141,33 @@ public class AdminService : IAdminService
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
+                var errorMessages = string.Join(", ", result.Errors.Select(e => e.Description));
+
                 _logger.LogWarning("Failed to update user with ID: {UserId}. Errors: {Errors}",
-                    userId,
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
-                return null;
+                    userId, errorMessages);
+
+                return Result<UserModel>.Fail(errorMessages);
             }
 
             var roles = await _userManager.GetRolesAsync(user);
 
-            return new UserModel
+            return Result<UserModel>.Ok(new UserModel
             {
                 Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
                 Username = user.UserName,
                 Roles = roles.ToList()
-            };
+            });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while updating user with ID: {UserId}", userId);
-            throw;
+            return Result<UserModel>.Fail("Unexpected error occurred while updating user.");
         }
     }
 
-    public async Task<bool> DeleteUser(string userId)
+    public async Task<Result<bool>> DeleteUser(string userId)
     {
         try
         {
@@ -169,16 +175,16 @@ public class AdminService : IAdminService
             if (user == null)
             {
                 _logger.LogWarning("User not found for deletion with ID: {UserId}", userId);
-                return false;
+                return Result<bool>.Fail("User not found.");
             }
 
             await _userManager.DeleteAsync(user);
-            return true;
+            return Result<bool>.Ok(true);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while deleting user with ID: {UserId}", userId);
-            throw;
+            return Result<bool>.Fail("Unexpected error occurred while deleting user.");
         }
     }
 }

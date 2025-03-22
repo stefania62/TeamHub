@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using TeamHub.Application.Interfaces;
 using TeamHub.Application.Models;
+using TeamHub.Application.Result;
 using TeamHub.Domain.Entities;
 using TeamHub.Infrastructure.Data;
 
@@ -18,13 +19,13 @@ public class TaskService : ITaskService
         _logger = logger;
     }
 
-    public async Task<List<TaskModel>> GetUserTasks(string userId, List<string> userRoles)
+    public async Task<Result<List<TaskModel>>> GetUserTasks(string userId, List<string> userRoles)
     {
         try
         {
             List<TaskItem> tasks;
 
-            if (userRoles.Contains("Admin"))
+            if (userRoles.Contains("Administrator"))
             {
                 tasks = await _context.Tasks.Include(t => t.Project).ToListAsync();
             }
@@ -34,27 +35,32 @@ public class TaskService : ITaskService
                     .Where(t => _context.ProjectEmployees
                         .Any(pe => pe.ProjectId == t.ProjectId && pe.EmployeeId == userId))
                     .Include(t => t.Project)
+                    .Include(t => t.AssignedTo)
                     .ToListAsync();
             }
 
-            return tasks.Select(task => new TaskModel
+            var result = tasks.Select(task => new TaskModel
             {
                 Id = task.Id,
                 Title = task.Title,
                 Description = task.Description,
                 IsCompleted = task.IsCompleted,
                 ProjectId = task.ProjectId,
-                AssignedUserId = task.AssignedToId
+                ProjectName = task.Project.Name,
+                AssignedUserId = task.AssignedToId,
+                AssignedUserName = task.AssignedTo?.FullName 
             }).ToList();
+
+            return Result<List<TaskModel>>.Ok(result);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while getting tasks for user {UserId}", userId);
-            throw;
+            return Result<List<TaskModel>>.Fail("Unexpected error occurred while fetching tasks.");
         }
     }
 
-    public async Task<TaskModel> CreateTask(string userId, TaskModel model, List<string> userRoles)
+    public async Task<Result<TaskModel>> CreateTask(string userId, TaskModel model, List<string> userRoles)
     {
         try
         {
@@ -65,7 +71,7 @@ public class TaskService : ITaskService
             if (project == null || (userRoles.Contains("Employee") && !project.Employees.Any(e => e.EmployeeId == userId)))
             {
                 _logger.LogWarning("Unauthorized task creation attempt by user {UserId} for project {ProjectId}", userId, model.ProjectId);
-                return null;
+                return Result<TaskModel>.Fail("Not authorized or project not found.");
             }
 
             var task = new TaskItem
@@ -82,7 +88,7 @@ public class TaskService : ITaskService
 
             _logger.LogInformation("User {UserId} created task {TaskId} in project {ProjectId}", userId, task.Id, task.ProjectId);
 
-            return new TaskModel
+            return Result<TaskModel>.Ok(new TaskModel
             {
                 Id = task.Id,
                 Title = task.Title,
@@ -90,16 +96,16 @@ public class TaskService : ITaskService
                 IsCompleted = task.IsCompleted,
                 ProjectId = task.ProjectId,
                 AssignedUserId = task.AssignedToId
-            };
+            });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while creating task for user {UserId}", userId);
-            throw;
+            return Result<TaskModel>.Fail("Unexpected error occurred while creating task.");
         }
     }
 
-    public async Task<bool> UpdateTask(int taskId, string userId, TaskModel model, List<string> userRoles)
+    public async Task<Result<bool>> UpdateTask(int taskId, string userId, TaskModel model, List<string> userRoles)
     {
         try
         {
@@ -107,24 +113,25 @@ public class TaskService : ITaskService
             if (task == null || (userRoles.Contains("Employee") && task.AssignedToId != userId))
             {
                 _logger.LogWarning("Unauthorized task update attempt by user {UserId} for task {TaskId}", userId, taskId);
-                return false;
+                return Result<bool>.Fail("Not authorized or task not found.");
             }
 
             task.Title = model.Title;
             task.Description = model.Description;
+            task.ProjectId = model.ProjectId;
             task.IsCompleted = model.IsCompleted;
             await _context.SaveChangesAsync();
 
-            return true;
+            return Result<bool>.Ok(true);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while updating task {TaskId} by user {UserId}", taskId, userId);
-            throw;
+            return Result<bool>.Fail("Unexpected error occurred while updating task.");
         }
     }
 
-    public async Task<bool> AssignTaskToEmployee(int taskId, string employeeId)
+    public async Task<Result<bool>> AssignEmployeeToTask(int taskId, string employeeId)
     {
         try
         {
@@ -134,7 +141,7 @@ public class TaskService : ITaskService
             if (task == null || employee == null)
             {
                 _logger.LogWarning("Task or employee not found. TaskId: {TaskId}, EmployeeId: {EmployeeId}", taskId, employeeId);
-                return false;
+                return Result<bool>.Fail("Task or employee not found.");
             }
 
             bool isEmployeeInProject = await _context.ProjectEmployees
@@ -143,22 +150,22 @@ public class TaskService : ITaskService
             if (!isEmployeeInProject)
             {
                 _logger.LogWarning("Employee {EmployeeId} is not part of project {ProjectId}", employeeId, task.ProjectId);
-                return false;
+                return Result<bool>.Fail("Employee is not part of the project.");
             }
 
             task.AssignedToId = employeeId;
             await _context.SaveChangesAsync();
 
-            return true;
+            return Result<bool>.Ok(true);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while assigning task {TaskId} to employee {EmployeeId}", taskId, employeeId);
-            throw;
+            return Result<bool>.Fail("Unexpected error occurred while assigning task.");
         }
     }
 
-    public async Task<bool> UnassignTaskFromEmployee(int taskId)
+    public async Task<Result<bool>> RemoveEmployeeFromTask(int taskId)
     {
         try
         {
@@ -166,22 +173,22 @@ public class TaskService : ITaskService
             if (task == null)
             {
                 _logger.LogWarning("Task {TaskId} not found for unassignment.", taskId);
-                return false;
+                return Result<bool>.Fail("Task not found.");
             }
 
             task.AssignedToId = null;
             await _context.SaveChangesAsync();
 
-            return true;
+            return Result<bool>.Ok(true);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error unassigning task {TaskId}", taskId);
-            throw;
+            return Result<bool>.Fail("Unexpected error occurred while unassigning task.");
         }
     }
 
-    public async Task<bool> CompleteTask(int taskId, string userId, List<string> userRoles)
+    public async Task<Result<bool>> CompleteTask(int taskId, string userId, List<string> userRoles)
     {
         try
         {
@@ -189,22 +196,22 @@ public class TaskService : ITaskService
             if (task == null || (userRoles.Contains("Employee") && task.AssignedToId != userId))
             {
                 _logger.LogWarning("Unauthorized task completion attempt by user {UserId} for task {TaskId}", userId, taskId);
-                return false;
+                return Result<bool>.Fail("Not authorized or task not found.");
             }
 
             task.IsCompleted = true;
             await _context.SaveChangesAsync();
 
-            return true;
+            return Result<bool>.Ok(true);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error marking task {TaskId} as complete by user {UserId}", taskId, userId);
-            throw;
+            return Result<bool>.Fail("Unexpected error occurred while completing task.");
         }
     }
 
-    public async Task<bool> DeleteTask(int taskId)
+    public async Task<Result<bool>> DeleteTask(int taskId)
     {
         try
         {
@@ -212,18 +219,18 @@ public class TaskService : ITaskService
             if (task == null)
             {
                 _logger.LogWarning("Task {TaskId} not found for deletion.", taskId);
-                return false;
+                return Result<bool>.Fail("Task not found.");
             }
 
             _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
 
-            return true;
+            return Result<bool>.Ok(true);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting task {TaskId}", taskId);
-            throw;
+            return Result<bool>.Fail("Unexpected error occurred while deleting task.");
         }
     }
 }

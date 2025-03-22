@@ -1,14 +1,15 @@
 ﻿using TeamHub.Application.Models;
+using TeamHub.Application.Result;
 
 namespace TeamHub.Application.Interfaces;
 
 public interface ITaskService
 {
-    Task<List<TaskModel>> GetUserTasks(string userId, List<string> userRoles);
-    Task<TaskModel> CreateTask(string userId, TaskModel model, List<string> userRoles);
-    Task<bool> UpdateTask(int taskId, string userId, TaskModel model, List<string> userRoles);
-    Task<bool> AssignTaskToEmployee(int taskId, string employeeId);
-    Task<bool> UnassignTaskFromEmployee(int taskId);
-    Task<bool> CompleteTask(int taskId, string userId, List<string> userRoles);
-    Task<bool> DeleteTask(int taskId);
+    Task<Result<List<TaskModel>>> GetUserTasks(string userId, List<string> userRoles);
+    Task<Result<TaskModel>> CreateTask(string userId, TaskModel model, List<string> userRoles);
+    Task<Result<bool>> UpdateTask(int taskId, string userId, TaskModel model, List<string> userRoles);
+    Task<Result<bool>> AssignEmployeeToTask(int taskId, string employeeId);
+    Task<Result<bool>> RemoveEmployeeFromTask(int taskId);
+    Task<Result<bool>> CompleteTask(int taskId, string userId, List<string> userRoles);
+    Task<Result<bool>> DeleteTask(int taskId);
 }
