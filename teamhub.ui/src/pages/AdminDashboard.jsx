@@ -28,7 +28,7 @@ const AdminDashboard = () => {
     const [editEmployeeFullname, setEditEmployeeFullname] = useState('');
     const [editEmployeeId, setEditEmployeeId] = useState(null);
     const [newProject, setNewProject] = useState("");
-    const [newDescription, setNewDescription] = useState("");  
+    const [newDescription, setNewDescription] = useState("");
     const [selectedEmployee, setSelectedEmployee] = useState("");
     const [selectedProject, setSelectedProject] = useState("");
     const [selectedTask, setSelectedTask] = useState("");
@@ -42,6 +42,8 @@ const AdminDashboard = () => {
         loadEmployees();
     }, []);
 
+    //#region Project
+
     const loadProjects = async () => {
         try {
             const data = await getProjects();
@@ -52,16 +54,6 @@ const AdminDashboard = () => {
         }
     };
 
-    const loadEmployees = async () => {
-        try {
-            const data = await getEmployees();
-            setEmployees(data);
-        } catch (error) {
-            console.error(error);
-            setError("Error loading employees.");
-        }
-    };
-
     const handleCreateProject = async () => {
         if (!newProject) {
             setError("Project name is required.");
@@ -69,20 +61,19 @@ const AdminDashboard = () => {
         }
 
         const projectModel = {
-            name: newProject,       
-            description: newDescription || "", 
+            name: newProject,
+            description: newDescription || "",
         };
 
         try {
-            await createProject(projectModel); 
-            setNewProject("");       
-            setNewDescription("");   
-            loadProjects();          
+            await createProject(projectModel);
+            setNewProject("");
+            setNewDescription("");
+            loadProjects();
         } catch (error) {
             setError("Failed to create project.");
         }
     };
-
     const handleUpdateProject = async () => {
         if (!newProject) {
             setError("Project name is required.");
@@ -111,6 +102,21 @@ const AdminDashboard = () => {
             setError("Failed to delete project.");
         }
     };
+
+    //#endregion
+
+    //#region User
+
+    const loadEmployees = async () => {
+        try {
+            const data = await getEmployees();
+            setEmployees(data);
+        } catch (error) {
+            console.error(error);
+            setError("Error loading employees.");
+        }
+    };
+
     const handleCreateEmployee = async () => {
         console.log("tt");
         if (!newEmployeeEmail || !newEmployeeFullname) {
@@ -119,22 +125,22 @@ const AdminDashboard = () => {
         }
 
         const employeeModel = {
-            username: newEmployeeUsername,        
-            email: newEmployeeEmail,         
-            fullName: newEmployeeFullname,    
-            password: newEmployeePassword,    
-            virtualPath: "",                  
-            roles: ["Employee"]             
+            username: newEmployeeUsername,
+            email: newEmployeeEmail,
+            fullName: newEmployeeFullname,
+            password: newEmployeePassword,
+            virtualPath: "",
+            roles: ["Employee"]
         };
         console.log(employeeModel);
         try {
-            await createEmployee(employeeModel);  
+            await createEmployee(employeeModel);
             setNewEmployeeEmail('');
             setNewEmployeeFullname('');
             setNewEmployeePassword('');
             setNewEmployeeUsername('');
             setNewEmployeeRole('');
-            loadEmployees();  
+            loadEmployees();
         } catch (error) {
             setError("Failed to create employee.");
         }
@@ -142,11 +148,11 @@ const AdminDashboard = () => {
 
     const handleEditEmployee = (employee) => {
         console.log(employee);
-        setEditEmployeeId(employee.id); 
-        setEditEmployeeEmail(employee.email);    
-        setEditEmployeeFullname(employee.fullname); 
-        setEditEmployeeRole(employee.role);  
-        setEditEmployeeUsername(employee.username);  
+        setEditEmployeeId(employee.id);
+        setEditEmployeeEmail(employee.email);
+        setEditEmployeeFullname(employee.fullname);
+        setEditEmployeeRole(employee.role);
+        setEditEmployeeUsername(employee.username);
     };
 
     const handleUpdateEmployee = async () => {
@@ -166,13 +172,13 @@ const AdminDashboard = () => {
 
         try {
             await updateEmployee(employeeModel);
-            setEditEmployeeId(null);  
+            setEditEmployeeId(null);
             setEditEmployeeFullname("");
             setEditEmployeeUsername("");
             setEditEmployeeEmail("");
-            loadEmployees();  
+            loadEmployees();
         } catch (error) {
-            setError(error);  
+            setError(error);
         }
     };
 
@@ -212,6 +218,10 @@ const AdminDashboard = () => {
         }
     };
 
+    //#endregion
+
+    //#region Task
+
     const handleCreateTask = async () => {
         if (!newTask || !selectedProject) {
             setError("Task name and project are required.");
@@ -244,6 +254,10 @@ const AdminDashboard = () => {
             setError("Failed to mark task as completed.");
         }
     };
+
+    //#endregion
+
+    //#region Tab Management
 
     // Tab Content
     const renderTabContent = () => {
@@ -284,8 +298,8 @@ const AdminDashboard = () => {
                         type="text"
                         className="form-control ms-2"
                         placeholder="Employee Role"
-                        value="Role: Employee"  
-                        readOnly  
+                        value="Role: Employee"
+                        readOnly
                     />
                     <input
                         type="text"
@@ -337,8 +351,8 @@ const AdminDashboard = () => {
                             type="text"
                             className="form-control ms-2"
                             placeholder="Employee Role"
-                            value="Role: Employee"  
-                            readOnly  
+                            value="Role: Employee"
+                            readOnly
                         />
                         <input
                             type="text"
@@ -377,19 +391,19 @@ const AdminDashboard = () => {
                                 <td>
                                     {!employee.roles.includes("Administrator") && (
                                         <>
-                                    <button
-                                        className="btn btn-warning btn-sm"
-                                        onClick={() => handleEditEmployee(employee)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        className="btn btn-danger btn-sm ms-2"
-                                        onClick={() => handleDeleteEmployee(employee.id)}
-                                    >
-                                        Delete
-                                    </button>
-                                            </>
+                                            <button
+                                                className="btn btn-warning btn-sm"
+                                                onClick={() => handleEditEmployee(employee)}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                className="btn btn-danger btn-sm ms-2"
+                                                onClick={() => handleDeleteEmployee(employee.id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </>
                                     )}
                                 </td>
                             </tr>
@@ -399,7 +413,6 @@ const AdminDashboard = () => {
             </div>
         </div>
     );
-
 
     // Project Management
     const renderProjectManagement = () => (
@@ -548,6 +561,8 @@ const AdminDashboard = () => {
     const handleTabChange = (tab) => {
         setActiveTab(tab);
     };
+
+    //#endregion
 
     return (
         <div className="container mt-5">
