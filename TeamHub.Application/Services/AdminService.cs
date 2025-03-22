@@ -5,6 +5,7 @@ using TeamHub.Application.Interfaces;
 using TeamHub.Application.Models;
 using TeamHub.Application.Result;
 using TeamHub.Domain.Entities;
+using TeamHub.Infrastructure.Data;
 
 namespace TeamHub.Application.Services;
 
@@ -14,11 +15,13 @@ namespace TeamHub.Application.Services;
 public class AdminService : IAdminService
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ApplicationDbContext _context;
     private readonly ILogger<AdminService> _logger;
 
-    public AdminService(UserManager<ApplicationUser> userManager, ILogger<AdminService> logger)
+    public AdminService(UserManager<ApplicationUser> userManager, ApplicationDbContext context, ILogger<AdminService> logger)
     {
         _userManager = userManager;
+        _context = context;
         _logger = logger;
     }
 
@@ -184,6 +187,18 @@ public class AdminService : IAdminService
             {
                 _logger.LogWarning("User not found for deletion with ID: {UserId}", userId);
                 return Result<bool>.Fail("User not found.");
+            }
+
+            // Check if user is assigned to any project
+            bool isInProjects = await _context.ProjectEmployees.AnyAsync(pe => pe.EmployeeId == userId);
+
+            // Check if user is assigned to any task
+            bool isInTasks = await _context.Tasks.AnyAsync(t => t.AssignedToId == userId);
+
+            if (isInProjects || isInTasks)
+            {
+                _logger.LogWarning("Cannot delete user with ID {UserId} because they are assigned to projects or tasks.", userId);
+                return Result<bool>.Fail("Cannot delete user who is assigned to projects or tasks.");
             }
 
             await _userManager.DeleteAsync(user);

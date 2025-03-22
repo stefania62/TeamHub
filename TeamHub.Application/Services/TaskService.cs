@@ -50,7 +50,7 @@ public class TaskService : ITaskService
                 Description = task.Description,
                 IsCompleted = task.IsCompleted,
                 ProjectId = task.ProjectId,
-                ProjectName = task.Project.Title,
+                ProjectTitle = task.Project.Title,
                 AssignedUserId = task.AssignedToId,
                 AssignedUserName = task.AssignedTo?.FullName
             }).ToList();

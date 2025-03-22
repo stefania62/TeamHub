@@ -39,7 +39,7 @@ public class TaskModel
     /// <summary>
     /// Gets or sets the name of the project.
     /// </summary>
-    public string ProjectName { get; set; }
+    public string ProjectTitle { get; set; }
 
     /// <summary>
     /// Gets or sets the ID of the user assigned to the task.
