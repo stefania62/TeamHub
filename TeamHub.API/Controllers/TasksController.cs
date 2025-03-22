@@ -21,13 +21,15 @@ public class TasksController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
-    public async Task<IActionResult> GetUserTasks()
+    [Authorize(Roles = "Employee,Administrator")]
+    public async Task<IActionResult> GetTasks()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
-        var tasks = await _taskService.GetUserTasks(userId, userRoles);
-        return Ok(tasks);
+
+        var result = await _taskService.GetUserTasks(userId, userRoles);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
+        return Ok(result.Data);
     }
 
     [HttpPost]
@@ -37,9 +39,9 @@ public class TasksController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
-        var task = await _taskService.CreateTask(userId, model, userRoles);
-        if (task == null) return BadRequest("Task creation failed.");
-        return CreatedAtAction(nameof(GetUserTasks), new { id = task.Id }, task);
+        var result = await _taskService.CreateTask(userId, model, userRoles);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
+        return Ok(new { message = "Task created successfully", task = result.Data });
     }
 
     [HttpPut("{id}")]
@@ -49,29 +51,49 @@ public class TasksController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
-        var success = await _taskService.UpdateTask(id, userId, model, userRoles);
-        if (!success) return BadRequest("Task update failed.");
-        return Ok("Task updated successfully.");
+        var result = await _taskService.UpdateTask(id, userId, model, userRoles);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
+        return Ok(new { message = "Task updated successfully" });
     }
 
-    [HttpPut("{id}/complete")]
+    [HttpPut("mark-complete/{id}")]
     [Authorize(Roles = "Employee,Administrator")]
-    public async Task<IActionResult> CompleteTask(int id, [FromBody] TaskModel model)
+    public async Task<IActionResult> CompleteTask(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
-        var success = await _taskService.CompleteTask(id, userId, userRoles);
-        if (!success) return BadRequest("Task update failed.");
-        return Ok("Task updated successfully.");
+        var result = await _taskService.CompleteTask(id, userId, userRoles);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
+        return Ok(new { message = "Task marked as completed" });
     }
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteTask(int id)
     {
-        var success = await _taskService.DeleteTask(id);
-        if (!success) return NotFound("Task not found.");
-        return NoContent();
+        var result = await _taskService.DeleteTask(id);
+        if (!result.Success) return NotFound(new { message = result.ErrorMessage });
+        return Ok(new { message = "Task deleted successfully" });
+    }
+
+    [HttpPost("{taskId}/assign/{employeeId}")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> AssignEmployeeToTask(int taskId, string employeeId)
+    {
+        var result = await _taskService.AssignEmployeeToTask(taskId, employeeId);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
+
+        return Ok(new { message = "Employee assigned successfully." });
+    }
+
+    [HttpDelete("{taskId}/remove/{employeeId}")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> RemoveEmployeeFromTask(int taskId, string employeeId)
+    {
+        var result = await _taskService.RemoveEmployeeFromTask(taskId);
+        if (!result.Success) return NotFound(new { message = result.ErrorMessage });
+
+        return Ok(new { message = "Employee removed successfully." });
     }
 }

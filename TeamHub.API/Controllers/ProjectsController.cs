@@ -26,63 +26,59 @@ public class ProjectsController : ControllerBase
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         var userRoles = User.FindAll(System.Security.Claims.ClaimTypes.Role).Select(r => r.Value).ToList();
 
-        var projects = await _projectService.GetProjects(userId, userRoles);
-        return Ok(projects);
+        var result = await _projectService.GetProjects(userId, userRoles);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
+
+        return Ok(result.Data);
     }
 
     [HttpPost]
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> CreateProject([FromBody] ProjectModel model)
     {
-        if (string.IsNullOrEmpty(model.Name))
-            return BadRequest("Project name is required.");
+        var result = await _projectService.CreateProject(model);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
 
-        var project = await _projectService.CreateProject(model);
-        return CreatedAtAction(nameof(GetProjects), new { id = project.Id }, project);
+        return Ok(new { message = "Project created successfully", project = result.Data });
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> UpdateProject(int id, [FromBody] ProjectModel model)
     {
-        if (string.IsNullOrEmpty(model.Name))
-            return BadRequest("Project name is required.");
+        var result = await _projectService.UpdateProject(id, model);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
 
-        var updatedProject = await _projectService.UpdateProject(id, model);
-        if (updatedProject == null)
-            return NotFound("Project not found.");
-
-        return Ok(updatedProject);
+        return Ok(new { message = "Project updated successfully", project = result.Data });
     }
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteProject(int id)
     {
-        var success = await _projectService.DeleteProject(id);
-        if (!success) return BadRequest("Cannot delete project with open tasks.");
+        var result = await _projectService.DeleteProject(id);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
 
-        return NoContent();
+        return Ok(new { message = "Project deleted successfully" });
     }
 
     [HttpPost("{projectId}/assign/{employeeId}")]
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> AssignEmployeeToProject(int projectId, string employeeId)
     {
-        var success = await _projectService.AssignEmployeeToProject(projectId, employeeId);
-        if (!success) return BadRequest("Employee is already assigned or project not found.");
+        var result = await _projectService.AssignEmployeeToProject(projectId, employeeId);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
 
-        return Ok("Employee assigned successfully.");
+        return Ok(new { message = "Employee assigned successfully." });
     }
 
     [HttpDelete("{projectId}/remove/{employeeId}")]
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> RemoveEmployeeFromProject(int projectId, string employeeId)
     {
-        var success = await _projectService.RemoveEmployeeFromProject(projectId, employeeId);
-        if (!success) return NotFound("Employee is not part of this project.");
+        var result = await _projectService.RemoveEmployeeFromProject(projectId, employeeId);
+        if (!result.Success) return NotFound(new { message = result.ErrorMessage });
 
-        return Ok("Employee removed successfully.");
+        return Ok(new { message = "Employee removed successfully." });
     }
 }
-

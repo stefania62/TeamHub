@@ -10,7 +10,7 @@ namespace TeamHub.API.Controllers;
 /// </summary>
 [Route("api/admin")]
 [ApiController]
-[Authorize(Roles = "Administrator")] 
+[Authorize(Roles = "Administrator")]
 public class AdminController : ControllerBase
 {
     private readonly IAdminService _adminService;
@@ -26,8 +26,9 @@ public class AdminController : ControllerBase
     [HttpGet("users")]
     public async Task<IActionResult> GetAllUsers()
     {
-        var users = await _adminService.GetAllUsers();
-        return Ok(users);
+        var result = await _adminService.GetAllUsers();
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
+        return Ok(result.Data);
     }
 
     /// <summary>
@@ -36,9 +37,9 @@ public class AdminController : ControllerBase
     [HttpGet("users/{userId}")]
     public async Task<IActionResult> GetUserById(string userId)
     {
-        var user = await _adminService.GetUserById(userId);
-        if (user == null) return NotFound("User not found.");
-        return Ok(user);
+        var result = await _adminService.GetUserById(userId);
+        if (!result.Success) return NotFound(new { message = result.ErrorMessage });
+        return Ok(result.Data);
     }
 
     /// <summary>
@@ -47,9 +48,9 @@ public class AdminController : ControllerBase
     [HttpPost("create-employee")]
     public async Task<IActionResult> CreateEmployee([FromBody] UserModel model)
     {
-        var user = await _adminService.CreateEmployee(model);
-        if (user == null) return BadRequest("User creation failed.");
-        return Ok(new { message = "Employee created successfully", user });
+        var result = await _adminService.CreateEmployee(model);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
+        return Ok(new { message = "Employee created successfully", user = result.Data });
     }
 
     /// <summary>
@@ -58,9 +59,9 @@ public class AdminController : ControllerBase
     [HttpPut("update-user/{userId}")]
     public async Task<IActionResult> UpdateUser(string userId, [FromBody] UserProfile model)
     {
-        var updatedUser = await _adminService.UpdateUser(userId, model);
-        if (updatedUser == null) return NotFound("User not found.");
-        return Ok(updatedUser);
+        var result = await _adminService.UpdateUser(userId, model);
+        if (!result.Success) return NotFound(new { message = result.ErrorMessage });
+        return Ok(result.Data);
     }
 
     /// <summary>
@@ -69,8 +70,8 @@ public class AdminController : ControllerBase
     [HttpDelete("delete-user/{userId}")]
     public async Task<IActionResult> DeleteUser(string userId)
     {
-        var success = await _adminService.DeleteUser(userId);
-        if (!success) return NotFound("User not found.");
+        var result = await _adminService.DeleteUser(userId);
+        if (!result.Success) return NotFound(new { message = result.ErrorMessage });
         return Ok(new { message = "User deleted successfully" });
     }
 }
