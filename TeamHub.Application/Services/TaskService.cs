@@ -8,6 +8,9 @@ using TeamHub.Infrastructure.Data;
 
 namespace TeamHub.Application.Services;
 
+/// <summary>
+/// Provides task operations.
+/// </summary>
 public class TaskService : ITaskService
 {
     private readonly ApplicationDbContext _context;
@@ -19,6 +22,7 @@ public class TaskService : ITaskService
         _logger = logger;
     }
 
+    ///<inheritdoc cref="ITaskService.GetUserTasks"/>
     public async Task<Result<List<TaskModel>>> GetUserTasks(string userId, List<string> userRoles)
     {
         try
@@ -48,7 +52,7 @@ public class TaskService : ITaskService
                 ProjectId = task.ProjectId,
                 ProjectName = task.Project.Name,
                 AssignedUserId = task.AssignedToId,
-                AssignedUserName = task.AssignedTo?.FullName 
+                AssignedUserName = task.AssignedTo?.FullName
             }).ToList();
 
             return Result<List<TaskModel>>.Ok(result);
@@ -60,6 +64,7 @@ public class TaskService : ITaskService
         }
     }
 
+    ///<inheritdoc cref="ITaskService.CreateTask"/>
     public async Task<Result<TaskModel>> CreateTask(string userId, TaskModel model, List<string> userRoles)
     {
         try
@@ -105,6 +110,7 @@ public class TaskService : ITaskService
         }
     }
 
+    ///<inheritdoc cref="ITaskService.UpdateTask"/>
     public async Task<Result<bool>> UpdateTask(int taskId, string userId, TaskModel model, List<string> userRoles)
     {
         try
@@ -131,6 +137,31 @@ public class TaskService : ITaskService
         }
     }
 
+    ///<inheritdoc cref="ITaskService.CompleteTask"/>
+    public async Task<Result<bool>> CompleteTask(int taskId, string userId, List<string> userRoles)
+    {
+        try
+        {
+            var task = await _context.Tasks.FindAsync(taskId);
+            if (task == null || (userRoles.Contains("Employee") && task.AssignedToId != userId))
+            {
+                _logger.LogWarning("Unauthorized task completion attempt by user {UserId} for task {TaskId}", userId, taskId);
+                return Result<bool>.Fail("Not authorized or task not found.");
+            }
+
+            task.IsCompleted = true;
+            await _context.SaveChangesAsync();
+
+            return Result<bool>.Ok(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error marking task {TaskId} as complete by user {UserId}", taskId, userId);
+            return Result<bool>.Fail("Unexpected error occurred while completing task.");
+        }
+    }
+
+    ///<inheritdoc cref="ITaskService.AssignEmployeeToTask"/>
     public async Task<Result<bool>> AssignEmployeeToTask(int taskId, string employeeId)
     {
         try
@@ -165,6 +196,7 @@ public class TaskService : ITaskService
         }
     }
 
+    ///<inheritdoc cref="ITaskService.RemoveEmployeeFromTask"/>
     public async Task<Result<bool>> RemoveEmployeeFromTask(int taskId)
     {
         try
@@ -188,29 +220,7 @@ public class TaskService : ITaskService
         }
     }
 
-    public async Task<Result<bool>> CompleteTask(int taskId, string userId, List<string> userRoles)
-    {
-        try
-        {
-            var task = await _context.Tasks.FindAsync(taskId);
-            if (task == null || (userRoles.Contains("Employee") && task.AssignedToId != userId))
-            {
-                _logger.LogWarning("Unauthorized task completion attempt by user {UserId} for task {TaskId}", userId, taskId);
-                return Result<bool>.Fail("Not authorized or task not found.");
-            }
-
-            task.IsCompleted = true;
-            await _context.SaveChangesAsync();
-
-            return Result<bool>.Ok(true);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error marking task {TaskId} as complete by user {UserId}", taskId, userId);
-            return Result<bool>.Fail("Unexpected error occurred while completing task.");
-        }
-    }
-
+    ///<inheritdoc cref="ITaskService.DeleteTask"/>
     public async Task<Result<bool>> DeleteTask(int taskId)
     {
         try

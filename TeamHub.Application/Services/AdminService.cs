@@ -8,6 +8,9 @@ using TeamHub.Domain.Entities;
 
 namespace TeamHub.Application.Services;
 
+/// <summary>
+/// Provides admin-related operations.
+/// </summary>
 public class AdminService : IAdminService
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -19,6 +22,7 @@ public class AdminService : IAdminService
         _logger = logger;
     }
 
+    /// <inheritdoc cref="IAdminService.GetAllUsers"/>
     public async Task<Result<List<UserModel>>> GetAllUsers()
     {
         try
@@ -49,6 +53,7 @@ public class AdminService : IAdminService
         }
     }
 
+    /// <inheritdoc cref="IAdminService.GetUserById"/>
     public async Task<Result<UserModel>> GetUserById(string userId)
     {
         try
@@ -77,6 +82,7 @@ public class AdminService : IAdminService
         }
     }
 
+    /// <inheritdoc cref="IAdminService.CreateEmployee"/>
     public async Task<Result<UserModel>> CreateEmployee(UserModel model)
     {
         try
@@ -123,6 +129,7 @@ public class AdminService : IAdminService
         }
     }
 
+    /// <inheritdoc cref="IAdminService.UpdateUser"/>
     public async Task<Result<UserModel>> UpdateUser(string userId, UserProfile model)
     {
         try
@@ -167,6 +174,7 @@ public class AdminService : IAdminService
         }
     }
 
+    /// <inheritdoc cref="IAdminService.DeleteUser"/>
     public async Task<Result<bool>> DeleteUser(string userId)
     {
         try

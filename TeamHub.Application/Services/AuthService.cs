@@ -12,6 +12,9 @@ using Microsoft.Extensions.Logging;
 
 namespace TeamHub.Application.Services;
 
+/// <summary>
+/// Provides authentication operations.
+/// </summary>
 public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -28,6 +31,7 @@ public class AuthService : IAuthService
         _logger = logger;
     }
 
+    ///<inheritdoc cref="IAuthService.AuthenticateUser"/>
     public async Task<string> AuthenticateUser(LoginModel model)
     {
         if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
@@ -77,6 +81,12 @@ public class AuthService : IAuthService
         }
     }
 
+    /// <summary>
+    /// Generates a signed JWT token using the provided claims.
+    /// </summary>
+    /// <param name="authClaims">Claims to include in the token.</param>
+    /// <returns>Signed JWT token as a string.</returns>
+    /// <exception cref="ArgumentException">Thrown if JWT secret is missing or invalid.</exception>
     private string GenerateJwtToken(IEnumerable<Claim> authClaims)
     {
         if (string.IsNullOrEmpty(_jwtSettings.Secret) || _jwtSettings.Secret.Length < 32)

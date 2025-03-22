@@ -5,6 +5,10 @@ using TeamHub.Application.Models;
 using TeamHub.Domain.Entities;
 
 namespace TeamHub.Application.Services;
+
+/// <summary>
+/// Provides functionality for managing user profiles.
+/// </summary>
 public class UserService : IUserService
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -16,6 +20,7 @@ public class UserService : IUserService
         _logger = logger;
     }
 
+    /// <inheritdoc cref="IUserService.GetProfile"/>
     public async Task<UserModel> GetProfile(string userId)
     {
         try
@@ -41,6 +46,7 @@ public class UserService : IUserService
         }
     }
 
+    /// <inheritdoc cref="IUserService.UpdateProfile"/>
     public async Task<bool> UpdateProfile(string userId, UserModel model)
     {
         try

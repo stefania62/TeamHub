@@ -8,6 +8,9 @@ using TeamHub.Infrastructure.Data;
 
 namespace TeamHub.Application.Services;
 
+/// <summary>
+/// Provides project-related operations.
+/// </summary>
 public class ProjectService : IProjectService
 {
     private readonly ApplicationDbContext _context;
@@ -19,6 +22,7 @@ public class ProjectService : IProjectService
         _logger = logger;
     }
 
+    /// <inheritdoc cref="IProjectService.GetProjects"/>
     public async Task<Result<List<ProjectModel>>> GetProjects(string userId, List<string> userRoles)
     {
         try
@@ -53,6 +57,7 @@ public class ProjectService : IProjectService
         }
     }
 
+    /// <inheritdoc cref="IProjectService.CreateProject"/>
     public async Task<Result<ProjectModel>> CreateProject(ProjectModel model)
     {
         try
@@ -80,6 +85,7 @@ public class ProjectService : IProjectService
         }
     }
 
+    /// <inheritdoc cref="IProjectService.UpdateProject"/>
     public async Task<Result<ProjectModel>> UpdateProject(int projectId, ProjectModel model)
     {
         try
@@ -111,39 +117,7 @@ public class ProjectService : IProjectService
         }
     }
 
-    public async Task<Result<bool>> DeleteProject(int projectId)
-    {
-        try
-        {
-            var project = await _context.Projects
-                .Include(p => p.Tasks)
-                .FirstOrDefaultAsync(p => p.Id == projectId);
-
-            if (project == null)
-            {
-                _logger.LogWarning("Project ID {ProjectId} not found for deletion.", projectId);
-                return Result<bool>.Fail("Project not found.");
-            }
-
-            if (project.Tasks.Any(t => !t.IsCompleted))
-            {
-                _logger.LogWarning("Cannot delete project ID {ProjectId} with open tasks.", projectId);
-                return Result<bool>.Fail("Cannot delete project with open tasks.");
-            }
-
-            _context.Projects.Remove(project);
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation("Deleted project ID {ProjectId}", projectId);
-            return Result<bool>.Ok(true);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occurred while deleting project ID {ProjectId}", projectId);
-            return Result<bool>.Fail("Unexpected error occurred while deleting project.");
-        }
-    }
-
+    /// <inheritdoc cref="IProjectService.AssignEmployeeToProject"/>
     public async Task<Result<bool>> AssignEmployeeToProject(int projectId, string employeeId)
     {
         try
@@ -184,6 +158,7 @@ public class ProjectService : IProjectService
         }
     }
 
+    /// <inheritdoc cref="IProjectService.RemoveEmployeeFromProject"/>
     public async Task<Result<bool>> RemoveEmployeeFromProject(int projectId, string employeeId)
     {
         try
@@ -207,6 +182,40 @@ public class ProjectService : IProjectService
         {
             _logger.LogError(ex, "Error removing employee ID {EmployeeId} from project ID {ProjectId}", employeeId, projectId);
             return Result<bool>.Fail("Unexpected error occurred while removing employee from project.");
+        }
+    }
+
+    /// <inheritdoc cref="IProjectService.DeleteProject"/>
+    public async Task<Result<bool>> DeleteProject(int projectId)
+    {
+        try
+        {
+            var project = await _context.Projects
+                .Include(p => p.Tasks)
+                .FirstOrDefaultAsync(p => p.Id == projectId);
+
+            if (project == null)
+            {
+                _logger.LogWarning("Project ID {ProjectId} not found for deletion.", projectId);
+                return Result<bool>.Fail("Project not found.");
+            }
+
+            if (project.Tasks.Any(t => !t.IsCompleted))
+            {
+                _logger.LogWarning("Cannot delete project ID {ProjectId} with open tasks.", projectId);
+                return Result<bool>.Fail("Cannot delete project with open tasks.");
+            }
+
+            _context.Projects.Remove(project);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Deleted project ID {ProjectId}", projectId);
+            return Result<bool>.Ok(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while deleting project ID {ProjectId}", projectId);
+            return Result<bool>.Fail("Unexpected error occurred while deleting project.");
         }
     }
 }
