@@ -11,6 +11,24 @@ const getAuthHeader = () => {
     return { Authorization: `Bearer ${token}` };
 };
 
+// Format errors
+const formatErrors = (error, fallbackMessage) => {
+    const backendMessage = error?.response?.data?.message;
+    const validationErrors = error?.response?.data?.errors;
+
+    let formattedErrors = [];
+
+    if (validationErrors) {
+        formattedErrors = Object.values(validationErrors).flat();
+    } else if (backendMessage) {
+        formattedErrors = [backendMessage];
+    } else {
+        formattedErrors = [fallbackMessage];
+    }
+
+    return formattedErrors;
+};
+
 //#region Employee
 
 // Get all employees
@@ -21,7 +39,20 @@ export const getEmployees = async () => {
         });
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        const backendMessage = error?.response?.data?.message;
+        const validationErrors = error?.response?.data?.errors;
+
+        let formattedErrors = [];
+
+        if (validationErrors) {
+            formattedErrors = Object.values(validationErrors).flat();
+        } else if (backendMessage) {
+            formattedErrors = [backendMessage];
+        } else {
+            formattedErrors = ["An unexpected error occurred while fetching employees."];
+        }
+
+        throw formattedErrors;
     }
 };
 
@@ -35,20 +66,20 @@ export const createEmployee = async (employeeModel) => {
         );
         return response.data;
     } catch (error) {
-        // Extracting the error message(s)
-        const errorMessage = error.response?.data?.errors || "An unexpected error occurred.";
+        const backendMessage = error?.response?.data?.message;
+        const validationErrors = error?.response?.data?.errors;
 
-        // If the error contains specific field errors, format them for display
-        let formattedError = "";
-        if (error.response?.data?.errors) {
-            formattedError = Object.values(error.response.data.errors)
-                .flat()
-                .join(" ");
+        let formattedErrors = [];
+
+        if (validationErrors) {
+            formattedErrors = Object.values(validationErrors).flat();
+        } else if (backendMessage) {
+            formattedErrors = [backendMessage];
         } else {
-            formattedError = errorMessage;
+            formattedErrors = ["An unexpected error occurred while creating the employee."];
         }
 
-        throw formattedError;
+        throw formattedErrors;
     }
 };
 
@@ -62,32 +93,45 @@ export const updateEmployee = async (employeeModel) => {
         );
         return response.data;
     } catch (error) {
-        // Extracting the error message(s)
-        const errorMessage = error.response?.data?.errors || "An unexpected error occurred.";
+        const backendMessage = error?.response?.data?.message;
+        const validationErrors = error?.response?.data?.errors;
 
-        let formattedError = "";
-        if (error.response?.data?.errors) {
-            formattedError = Object.values(error.response.data.errors)
-                .flat()
-                .join(" ");
+        let formattedErrors = [];
+
+        if (validationErrors) {
+            formattedErrors = Object.values(validationErrors).flat();
+        } else if (backendMessage) {
+            formattedErrors = [backendMessage];
         } else {
-            formattedError = errorMessage;
+            formattedErrors = ["An unexpected error occurred while updating the employee."];
         }
 
-        throw formattedError;
+        throw formattedErrors;
     }
 };
 
 // Delete employee
 export const deleteEmployee = async (employeeId) => {
     try {
-        await axios.delete(`${API_BASE_URL}/admin/delete-user/${employeeId}`, {
+        const response = await axios.delete(`${API_BASE_URL}/admin/delete-user/${employeeId}`, {
             headers: getAuthHeader(),
         });
-        return { success: true };
-
+        return response.data;
     } catch (error) {
-        throw error.response.data;
+        const backendMessage = error?.response?.data?.message;
+        const validationErrors = error?.response?.data?.errors;
+
+        let formattedErrors = [];
+
+        if (validationErrors) {
+            formattedErrors = Object.values(validationErrors).flat();
+        } else if (backendMessage) {
+            formattedErrors = [backendMessage];
+        } else {
+            formattedErrors = ["An unexpected error occurred while deleting the employee."];
+        }
+
+        throw formattedErrors;
     }
 };
 
@@ -103,7 +147,7 @@ export const getProjects = async () => {
         });
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw formatErrors(error, "An unexpected error occurred while fetching projects.");
     }
 };
 
@@ -119,33 +163,21 @@ export const createProject = async (projectModel) => {
         );
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw formatErrors(error, "An unexpected error occurred while creating the project.");
     }
 };
 
 // Update project
-export const updateProject = async (projectId, updatedData) => {
+export const updateProject = async (projectModel) => {
     try {
         const response = await axios.put(
-            `${API_BASE_URL}/projects/${projectId}`,
-            updatedData,
+            `${API_BASE_URL}/projects/${projectModel.id}`,
+            projectModel,
             { headers: getAuthHeader() }
         );
         return response.data;
     } catch (error) {
-        throw error.response.data;
-    }
-};
-
-// Delete a project
-export const deleteProject = async (projectId) => {
-    try {
-        await axios.delete(`${API_BASE_URL}/projects/${projectId}`, {
-            headers: getAuthHeader()
-        });
-        return { success: true };
-    } catch (error) {
-        throw error.response.data;
+        throw formatErrors(error, "An unexpected error occurred while updating the project.");
     }
 };
 
@@ -154,13 +186,14 @@ export const assignEmployeeToProject = async (projectId, employeeId) => {
     try {
         await axios.post(
             `${API_BASE_URL}/projects/${projectId}/assign/${employeeId}`,
+            null,
             {
                 headers: getAuthHeader()
             }
         );
         return { success: true };
     } catch (error) {
-        throw error.response.data;
+        throw formatErrors(error, "An unexpected error occurred while assigning the employee to the project.");
     }
 };
 
@@ -175,7 +208,19 @@ export const removeEmployeeFromProject = async (projectId, employeeId) => {
         );
         return { success: true };
     } catch (error) {
-        throw error.response.data;
+        throw formatErrors(error, "An unexpected error occurred while removing the employee from the project.");
+    }
+};
+
+// Delete a project
+export const deleteProject = async (projectId) => {
+    try {
+        await axios.delete(`${API_BASE_URL}/projects/${projectId}`, {
+            headers: getAuthHeader()
+        });
+        return { success: true };
+    } catch (error) {
+        throw formatErrors(error, "An unexpected error occurred while deleting the project.");
     }
 };
 
@@ -183,63 +228,115 @@ export const removeEmployeeFromProject = async (projectId, employeeId) => {
 
 //#region Task
 
-// Get tasks for the authenticated user
-export const getUserTasks = async () => {
+// Get tasks 
+export const getTasks = async () => {
     try {
         const response = await axios.get(`${API_BASE_URL}/tasks`, {
             headers: getAuthHeader()
         });
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        const backendMessage = error?.response?.data?.message;
+        const validationErrors = error?.response?.data?.errors;
+
+        let formattedErrors = [];
+
+        if (validationErrors) {
+            formattedErrors = Object.values(validationErrors).flat();
+        } else if (backendMessage) {
+            formattedErrors = [backendMessage];
+        } else {
+            formattedErrors = ["An unexpected error occurred while fetching tasks."];
+        }
+
+        throw formattedErrors;
     }
 };
 
 // Create a new task
-export const createTask = async (title, projectId, assignedUserId) => {
+export const createTask = async (taskModel) => {
     try {
         const response = await axios.post(
             `${API_BASE_URL}/tasks`,
-            { title, projectId, assignedUserId },
+            taskModel,
             {
                 headers: getAuthHeader()
             }
         );
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        const backendMessage = error?.response?.data?.message;
+        const validationErrors = error?.response?.data?.errors;
+
+        let formattedErrors = [];
+
+        if (validationErrors) {
+            formattedErrors = Object.values(validationErrors).flat();
+        } else if (backendMessage) {
+            formattedErrors = [backendMessage];
+        } else {
+            formattedErrors = ["An unexpected error occurred while creating the task."];
+        }
+
+        throw formattedErrors;
     }
 };
 
-// Mark a task as completed
+export const updateTask = async (taskModel) => {
+    try {
+        const response = await axios.put(
+            `${API_BASE_URL}/tasks/${taskModel.id}`,
+            taskModel,
+            { headers: getAuthHeader() }
+        );
+        return response.data;
+    } catch (error) {
+        throw formatErrors(error, "An unexpected error occurred while updating the project.");
+    }
+};
+
+// Mark task as completed
 export const completeTask = async (taskId) => {
     try {
-        await axios.put(
-            `${API_BASE_URL}/tasks/${taskId}/complete`,
-            {},
-            {
-                headers: getAuthHeader()
-            }
-        );
+        await axios.put(`${API_BASE_URL}/tasks/mark-complete/${taskId}`, null, {
+            headers: getAuthHeader()
+        });
+      
         return { success: true };
     } catch (error) {
-        throw error.response.data;
+        const backendMessage = error?.response?.data?.message;
+        throw [backendMessage || "An unexpected error occurred while marking the task as completed."];
     }
 };
 
-// Assign a task to an employee
-export const assignTask = async (taskId, employeeId) => {
+// Assign an employee to a task
+export const assignEmployeeToTask = async (tasksId, employeeId) => {
     try {
-        await axios.put(
-            `${API_BASE_URL}/tasks/${taskId}/assign`,
-            { employeeId },
+        await axios.post(
+            `${API_BASE_URL}/tasks/${tasksId}/assign/${employeeId}`,
+            null,
             {
                 headers: getAuthHeader()
             }
         );
         return { success: true };
     } catch (error) {
-        throw error.response.data;
+        throw formatErrors(error, "An unexpected error occurred while assigning the employee to the task.");
+    }
+};
+
+// Remove an employee from a project
+export const removeEmployeeFromTask = async (taskId, employeeId) => {
+    try {
+        await axios.delete(
+            `${API_BASE_URL}/tasks/${taskId}/remove/${employeeId}`,
+            {
+                headers: getAuthHeader()
+            }
+        );
+        return { success: true };
+    } catch (error) {
+        throw formatErrors(error, "An unexpected error occurred while removing the employee from the task.");
     }
 };
 
@@ -251,9 +348,9 @@ export const deleteTask = async (taskId) => {
         });
         return { success: true };
     } catch (error) {
-        throw error.response.data;
+        const backendMessage = error?.response?.data?.message;
+        throw [backendMessage || "An unexpected error occurred while deleting the task."];
     }
 };
 
 //#endregion
-
