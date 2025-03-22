@@ -57,7 +57,7 @@ public class AdminController : ControllerBase
     /// Update user details.
     /// </summary>
     [HttpPut("update-user/{userId}")]
-    public async Task<IActionResult> UpdateUser(string userId, [FromBody] UserProfile model)
+    public async Task<IActionResult> UpdateUser(string userId, [FromBody] UserModel model)
     {
         var result = await _adminService.UpdateUser(userId, model);
         if (!result.Success) return NotFound(new { message = result.ErrorMessage });

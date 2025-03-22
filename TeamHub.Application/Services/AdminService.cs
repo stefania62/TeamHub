@@ -130,7 +130,7 @@ public class AdminService : IAdminService
     }
 
     /// <inheritdoc cref="IAdminService.UpdateUser"/>
-    public async Task<Result<UserModel>> UpdateUser(string userId, UserProfile model)
+    public async Task<Result<UserModel>> UpdateUser(string userId, UserModel model)
     {
         try
         {

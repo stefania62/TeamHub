@@ -34,7 +34,7 @@ public interface IAdminService
     /// <param name="userId">The ID of the user to update.</param>
     /// <param name="model">The user profile with updated data.</param>
     /// <returns>A result containing the updated user model.</returns>
-    Task<Result<UserModel>> UpdateUser(string userId, UserProfile model);
+    Task<Result<UserModel>> UpdateUser(string userId, UserModel model);
 
     /// <summary>
     /// Deletes a user by their ID.

@@ -3,8 +3,8 @@ using Microsoft.Extensions.Logging;
 using TeamHub.Application.Interfaces;
 using TeamHub.Application.Models;
 using TeamHub.Application.Result;
-using TeamHub.Domain.Entities;
 using TeamHub.Infrastructure.Data;
+using TaskItem = TeamHub.Domain.Entities.TaskItem;
 
 namespace TeamHub.Application.Services;
 
@@ -50,7 +50,7 @@ public class TaskService : ITaskService
                 Description = task.Description,
                 IsCompleted = task.IsCompleted,
                 ProjectId = task.ProjectId,
-                ProjectName = task.Project.Name,
+                ProjectName = task.Project.Title,
                 AssignedUserId = task.AssignedToId,
                 AssignedUserName = task.AssignedTo?.FullName
             }).ToList();

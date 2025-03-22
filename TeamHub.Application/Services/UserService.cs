@@ -36,7 +36,7 @@ public class UserService : IUserService
             {
                 FullName = user.FullName,
                 Email = user.Email,
-                VirtualPath = user.ProfilePicture
+                VirtualPath = user.ImageVirtualPath
             };
         }
         catch (Exception ex)

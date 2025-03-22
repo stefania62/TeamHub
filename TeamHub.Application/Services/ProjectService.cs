@@ -44,7 +44,7 @@ public class ProjectService : IProjectService
             var result = projects.Select(project => new ProjectModel
             {
                 Id = project.Id,
-                Name = project.Name,
+                Title = project.Title,
                 Description = project.Description,
             }).ToList();
 
@@ -64,7 +64,7 @@ public class ProjectService : IProjectService
         {
             var project = new Project
             {
-                Name = model.Name,
+                Title = model.Title,
                 Description = model.Description
             };
 
@@ -74,13 +74,13 @@ public class ProjectService : IProjectService
             return Result<ProjectModel>.Ok(new ProjectModel
             {
                 Id = project.Id,
-                Name = project.Name,
+                Title = project.Title,
                 Description = project.Description
             });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while creating project: {ProjectName}", model.Name);
+            _logger.LogError(ex, "Error occurred while creating project: {ProjectTitle}", model.Title);
             return Result<ProjectModel>.Fail("Unexpected error occurred while creating project.");
         }
     }
@@ -97,7 +97,7 @@ public class ProjectService : IProjectService
                 return Result<ProjectModel>.Fail("Project not found.");
             }
 
-            project.Name = model.Name;
+            project.Title = model.Title;
             project.Description = model.Description;
             await _context.SaveChangesAsync();
 
@@ -106,7 +106,7 @@ public class ProjectService : IProjectService
             return Result<ProjectModel>.Ok(new ProjectModel
             {
                 Id = project.Id,
-                Name = project.Name,
+                Title = project.Title,
                 Description = project.Description
             });
         }
