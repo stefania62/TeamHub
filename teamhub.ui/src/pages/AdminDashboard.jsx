@@ -35,7 +35,7 @@ const AdminDashboard = () => {
     const [projects, setProjects] = useState([]);
     const [newProject, setNewProject] = useState("");
     const [editProjectId, setEditProjectId] = useState("");
-    const [editProjectName, setEditProjectName] = useState("");
+    const [editProjectTitle, seteditProjectTitle] = useState("");
     const [editProjectDescription, setEditProjectDescription] = useState("");
     const [selectedEmployeeForProject, setselectedEmployeeForProject] = useState("");
     const [showCreateProjectForm, setShowCreateProjectForm] = useState(false);
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
     const [selectedAssignProject, setSelectedAssignProject] = useState("");
     const [tasks, setTasks] = useState([]);
     const [editTaskId, setEditTaskId] = useState("");
-    const [editTaskName, setEditTaskName] = useState("");
+    const [editTaskTitle, setEditTaskTitle] = useState("");
     const [editTaskDescription, setEditTaskDescription] = useState("");
     const [editTaskProjectId, setEditTaskProjectId] = useState("");
     const [editTaskIsCompleted, setEditTaskIsCompleted] = useState("");
@@ -51,7 +51,7 @@ const AdminDashboard = () => {
     const [selectedTaskEmployee, setSelectedTaskEmployee] = useState("");
     const [selectedTask, setSelectedTask] = useState("");
     const [newDescription, setNewDescription] = useState("");
-    const [newTaskName, setNewTaskName] = useState("");
+    const [newTaskTitle, setNewTaskTitle] = useState("");
     const [newTaskDescription, setNewTaskDescription] = useState("");
     const [activeTab, setActiveTab] = useState("welcome");
     const [showCreateForm, setShowCreateForm] = useState(false);
@@ -269,12 +269,12 @@ const AdminDashboard = () => {
     // Create project
     const handleCreateProject = async () => {
         if (!newProject) {
-            setErrors(["Project name is required."]);
+            setErrors(["Project title is required."]);
             return;
         }
 
         const projectModel = {
-            name: newProject,
+            title: newProject,
             description: newDescription || "",
         };
 
@@ -293,26 +293,26 @@ const AdminDashboard = () => {
     // Edit project
     const handleEditProject = (project) => {
         setEditProjectId(project.id);
-        setEditProjectName(project.name);
+        setEditProjectTitle(project.title);
         setEditProjectDescription(project.description);
     };
 
     const handleUpdateProject = async () => {
-        if (!editProjectName) {
-            setErrors(["Project name is required."]);
+        if (!editProjectTitle) {
+            setErrors(["Project title is required."]);
             return;
         }
 
         const projectModel = {
             id: editProjectId,
-            name: editProjectName,
+            title: editProjectTitle,
             description: editProjectDescription || "",
         };
 
         try {
             await updateProject(projectModel);
             setEditProjectId("");
-            setEditProjectName("");
+            seteditProjectTitle("");
             setEditProjectDescription("");
             setErrors([]);
             loadProjects();
@@ -352,23 +352,23 @@ const AdminDashboard = () => {
 
     // Create tasks
     const handleCreateTask = async () => {
-        if (!newTaskName || !selectedProject) {
-            setErrors(["Task name and project are required."]);
+        if (!newTaskTitle || !selectedProject) {
+            setErrors(["Task title and project are required."]);
             return;
         }
 
         const taskModel = {
-            title: newTaskName,
+            title: newTaskTitle,
             projectId: selectedProject,
             isCompleted: false,
             description: newTaskDescription,
-            projectname: "",
+            projectTitle: "",
             assignedUserId: null
         };
 
         try {
             await createTask(taskModel);
-            setNewTaskName("");
+            setNewTaskTitle("");
             setNewTaskDescription("");
             setErrors([]);
             loadTasks();
@@ -381,32 +381,32 @@ const AdminDashboard = () => {
     // Edit tasks
     const handleEditTask = (task) => {
         setEditTaskId(task.id);
-        setEditTaskName(task.title);
+        setEditTaskTitle(task.title);
         setEditTaskDescription(task.description);
         setEditTaskProjectId(task.projectId);
         setEditTaskIsCompleted(task.isCompleted);
     };
 
     const handleUpdateTask = async () => {
-        if (!editTaskName || !editTaskProjectId) {
-            setErrors(["Task name and project are required."]);
+        if (!editTaskTitle || !editTaskProjectId) {
+            setErrors(["Task title and project are required."]);
             return;
         }
 
         const taskModel = {
             id: editTaskId,
-            title: editTaskName,
+            title: editTaskTitle,
             description: editTaskDescription,
             projectId: editTaskProjectId,
             isCompleted: editTaskIsCompleted,
-            projectname: "",
+            projectTitle: "",
             assignedUserId: null
         };
 
         try {
             await updateTask(taskModel);
             setEditTaskId("");
-            setEditTaskName("");
+            setEditTaskTitle("");
             setEditTaskDescription("");
             setEditTaskProjectId("");
             setErrors([]);
@@ -736,7 +736,7 @@ const AdminDashboard = () => {
                         <h5 className="text-dark mb-3">Enter Project Details</h5>
                         <div className="row g-3 align-items-center">
                             <div className="col-md-4">
-                                <label className="form-label">Project Name</label>
+                                <label className="form-label">Project Title</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -774,16 +774,16 @@ const AdminDashboard = () => {
                         <h5 className="text-dark mb-3">Edit Project Details</h5>
                         <div className="row g-3 align-items-center">
                             <div className="col-md-4">
-                                <label className="form-label">Project Name</label>
+                                <label className="form-label">Project Title</label>
                                 <input
                                     type="text"
                                     className="form-control"
                                     placeholder="e.g. Internal CRM"
-                                    value={editProjectName}
-                                    onChange={(e) => setEditProjectName(e.target.value)}
+                                    value={editProjectTitle}
+                                    onChange={(e) => seteditProjectTitle(e.target.value)}
                                 />
                             </div>
-                            <div className="col-md-6">
+                            <div className="col-md-5">
                                 <label className="form-label">Description</label>
                                 <input
                                     type="text"
@@ -793,12 +793,18 @@ const AdminDashboard = () => {
                                     onChange={(e) => setEditProjectDescription(e.target.value)}
                                 />
                             </div>
-                            <div className="col-md-2 d-grid align-self-end">
+                            <div className="col-md-3 d-flex gap-2 align-items-end align-self-end mb-1">
                                 <button
-                                    className="btn btn-primary"
+                                    className="btn btn-primary btn-sm"
                                     onClick={handleUpdateProject}
                                 >
                                     Update
+                                </button>
+                                <button
+                                    className="btn btn btn-warning btn-sm"
+                                    onClick={() => setEditProjectId(null)}
+                                >
+                                    Cancel
                                 </button>
                             </div>
                         </div>
@@ -812,7 +818,7 @@ const AdminDashboard = () => {
                             <table className="table align-middle table-hover table-bordered">
                                 <thead className="table-light">
                                     <tr>
-                                        <th>Project Name</th>
+                                        <th>Project Title</th>
                                         <th>Description</th>
                                         <th className="text-center">Actions</th>
                                     </tr>
@@ -820,7 +826,7 @@ const AdminDashboard = () => {
                                 <tbody>
                                     {projects.map((project) => (
                                         <tr key={project.id}>
-                                            <td>{project.name}</td>
+                                            <td>{project.title}</td>
                                             <td>{project.description}</td>
                                             <td className="text-center">
                                                 <button
@@ -898,8 +904,8 @@ const AdminDashboard = () => {
                                     type="text"
                                     className="form-control"
                                     placeholder="e.g. Initial Setup"
-                                    value={newTaskName}
-                                    onChange={(e) => setNewTaskName(e.target.value)}
+                                    value={newTaskTitle}
+                                    onChange={(e) => setNewTaskTitle(e.target.value)}
                                 />
                             </div>
                             <div className="col-md-4">
@@ -922,7 +928,7 @@ const AdminDashboard = () => {
                                     <option value="">Select Project</option>
                                     {projects.map((project) => (
                                         <option key={project.id} value={project.id}>
-                                            {project.name}
+                                            {project.title}
                                         </option>
                                     ))}
                                 </select>
@@ -949,11 +955,11 @@ const AdminDashboard = () => {
                                     type="text"
                                     className="form-control"
                                     placeholder="e.g. Bug Fix"
-                                    value={editTaskName}
-                                    onChange={(e) => setEditTaskName(e.target.value)}
+                                    value={editTaskTitle}
+                                    onChange={(e) => setEditTaskTitle(e.target.value)}
                                 />
                             </div>
-                            <div className="col-md-5">
+                            <div className="col-md-4">
                                 <label className="form-label">Description</label>
                                 <input
                                     type="text"
@@ -973,17 +979,23 @@ const AdminDashboard = () => {
                                     <option value="">Select Project</option>
                                     {projects.map((project) => (
                                         <option key={project.id} value={project.id}>
-                                            {project.name}
+                                            {project.title}
                                         </option>
                                     ))}
                                 </select>
                             </div>
-                            <div className="col-md-2 d-grid align-self-end">
+                            <div className="col-md-3 d-flex gap-2 align-items-end align-self-end mb-1">
                                 <button
-                                    className="btn btn-primary"
+                                    className="btn btn-primary btn-sm"
                                     onClick={handleUpdateTask}
                                 >
                                     Update
+                                </button>
+                                <button
+                                    className="btn btn btn-warning btn-sm"
+                                    onClick={() => setEditTaskId(null)}
+                                >
+                                    Cancel
                                 </button>
                             </div>
                         </div>
@@ -1012,7 +1024,7 @@ const AdminDashboard = () => {
                                             <td>{task.title}</td>
                                             <td>{task.description}</td>
                                             <td>{task.assignedUsername || "Unassigned"}</td>
-                                            <td>{task.projectName}</td>
+                                            <td>{task.projectTitle}</td>
                                             <td>
                                                 {task.isCompleted === true ? (
                                                     <span className="badge bg-success">Completed</span>
@@ -1099,7 +1111,7 @@ const AdminDashboard = () => {
                                 <option value="">-- Select Project --</option>
                                 {projects.map((project) => (
                                     <option key={project.id} value={project.id}>
-                                        {project.name}
+                                        {project.title}
                                     </option>
                                 ))}
                             </select>
