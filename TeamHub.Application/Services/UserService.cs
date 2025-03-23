@@ -101,7 +101,6 @@ public class UserService : IUserService
                 _logger.LogInformation("Password updated successfully for user {UserId}.", userId);
             }
 
-
             var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)

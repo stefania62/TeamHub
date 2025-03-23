@@ -88,7 +88,7 @@ public class TaskService : ITaskService
                 Description = model.Description,
                 IsCompleted = model.IsCompleted,
                 ProjectId = model.ProjectId,
-                AssignedToId = model.AssignedUserId
+                AssignedToId = userRoles.Contains("Employee") ? userId : null
             };
 
             _context.Tasks.Add(task);

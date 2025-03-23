@@ -86,9 +86,22 @@ export const createEmployee = async (employeeModel) => {
 // Update employee
 export const updateEmployee = async (employeeModel) => {
     try {
+        const formData = new FormData();
+        formData.append("FullName", employeeModel.fullName);
+        formData.append("Username", employeeModel.username);
+        formData.append("Email", employeeModel.email);
+        if (employeeModel.password) {
+            formData.append("Password", employeeModel.password);
+        }
+        employeeModel.roles?.forEach(role => formData.append("Roles", role));
+
+        if (employeeModel.profilePicture) {
+            formData.append("ProfilePicture", employeeModel.profilePicture);
+        }
+
         const response = await axios.put(
             `${API_BASE_URL}/admin/update-user/${employeeModel.id}`,
-            employeeModel,
+            formData,
             { headers: getAuthHeader() }
         );
         return response.data;
@@ -161,7 +174,7 @@ export const updateProfile = async (profileModel) => {
         if (profileModel.password) {
             formData.append("Password", profileModel.password);
         }
-        profileModel.roles?.forEach(role => formData.append("Roles", role)); // if roles is array
+        profileModel.roles?.forEach(role => formData.append("Roles", role));
 
         if (profileModel.profilePicture) {
             formData.append("ProfilePicture", profileModel.profilePicture);

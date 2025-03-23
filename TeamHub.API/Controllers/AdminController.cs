@@ -49,7 +49,7 @@ public class AdminController : ControllerBase
     /// </summary>
     [HttpPost("create-employee")]
     [Authorize(Roles = "Administrator")]
-    public async Task<IActionResult> CreateEmployee([FromBody] UserModel model)
+    public async Task<IActionResult> CreateEmployee([FromForm] UserModel model)
     {
         var result = await _adminService.CreateEmployee(model);
         if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
@@ -61,7 +61,7 @@ public class AdminController : ControllerBase
     /// </summary>
     [HttpPut("update-user/{userId}")]
     [Authorize(Roles = "Administrator")]
-    public async Task<IActionResult> UpdateUser(string userId, [FromBody] UserModel model)
+    public async Task<IActionResult> UpdateUser(string userId, [FromForm] UserModel model)
     {
         var result = await _adminService.UpdateUser(userId, model);
         if (!result.Success) return NotFound(new { message = result.ErrorMessage });

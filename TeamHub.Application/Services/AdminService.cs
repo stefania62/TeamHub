@@ -106,6 +106,7 @@ public class AdminService : IAdminService
                 FullName = user.FullName,
                 Email = user.Email,
                 Username = user.UserName,
+                VirtualPath = user.ImageVirtualPath,
                 Roles = roles.ToList()
             });
         }
@@ -134,6 +135,24 @@ public class AdminService : IAdminService
                 FullName = model.FullName
             };
 
+            // Save profile picture if provided
+            if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
+            {
+                var fileName = $"Img_{DateTime.UtcNow.Ticks}{Path.GetExtension(model.ProfilePicture.FileName)}";
+                var folderPath = Path.Combine("wwwroot", "uploads", "profile-pictures");
+                var filePath = Path.Combine(folderPath, fileName);
+
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.ProfilePicture.CopyToAsync(stream);
+                }
+
+                user.ImageVirtualPath = $"/uploads/profile-pictures/{fileName}";
+            }
+
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
@@ -153,6 +172,7 @@ public class AdminService : IAdminService
                 FullName = user.FullName,
                 Email = user.Email,
                 Username = user.UserName,
+                VirtualPath = user.ImageVirtualPath,
                 Roles = new List<string> { "Employee" }
             });
         }
@@ -179,6 +199,40 @@ public class AdminService : IAdminService
             user.Email = model.Email;
             user.UserName = model.Username;
 
+            // Save profile picture if provided
+            if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
+            {
+                var fileName = $"{userId}_{DateTime.UtcNow.Ticks}{Path.GetExtension(model.ProfilePicture.FileName)}";
+                var folderPath = Path.Combine("wwwroot", "uploads", "profile-pictures");
+                var filePath = Path.Combine(folderPath, fileName);
+
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.ProfilePicture.CopyToAsync(stream);
+                }
+
+                user.ImageVirtualPath = $"/uploads/profile-pictures/{fileName}";
+            }
+
+            // Update password if provided
+            if (!string.IsNullOrWhiteSpace(model.Password))
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var passwordResult = await _userManager.ResetPasswordAsync(user, token, model.Password);
+
+                if (!passwordResult.Succeeded)
+                {
+                    var passwordErrors = string.Join(", ", passwordResult.Errors.Select(e => e.Description));
+                    _logger.LogWarning("Password update failed for user {UserId}: {Errors}", userId, passwordErrors);
+                    return Result<UserModel>.Fail($"Password update failed: {passwordErrors}");
+                }
+
+                _logger.LogInformation("Password updated successfully for user {UserId}.", userId);
+            }
+
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
@@ -198,6 +252,7 @@ public class AdminService : IAdminService
                 FullName = user.FullName,
                 Email = user.Email,
                 Username = user.UserName,
+                VirtualPath = user.ImageVirtualPath,
                 Roles = roles.ToList()
             });
         }

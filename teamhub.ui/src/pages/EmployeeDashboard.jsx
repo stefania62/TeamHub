@@ -77,7 +77,6 @@ const EmployeeDashboard = () => {
         setEmployees(data);
     };
 
-
     // Update profile
     const handleProfileUpdate = async () => {
         setErrors([]);
@@ -91,7 +90,6 @@ const EmployeeDashboard = () => {
             roles: profile.roles,
             profilePicture: selectedFile
         };
-        console.log("Testett" + profileModel);
 
         try {
             await updateProfile(profileModel);

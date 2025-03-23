@@ -26,11 +26,18 @@ const AdminDashboard = () => {
     const [newEmployeeEmail, setNewEmployeeEmail] = useState('');
     const [newEmployeeUsername, setNewEmployeeUsername] = useState('');
     const [newEmployeePassword, setNewEmployeePassword] = useState('');
-    const [editEmployeeRole, setEditEmployeeRole] = useState('');
+    const [newEmployeeProfilePicture, setNewEmployeeProfilePicture] = useState(null);
+    const [newEmployeePreviewUrl, setNewEmployeePreviewUrl] = useState("");
+    const [editEmployeeRole, setEditEmployeeRole] = useState([]);
     const [editEmployeeUsername, setEditEmployeeUsername] = useState('');
     const [editEmployeeEmail, setEditEmployeeEmail] = useState('');
     const [editEmployeeFullname, setEditEmployeeFullname] = useState('');
     const [editEmployeeId, setEditEmployeeId] = useState(null);
+    const [editEmployeePreviewUrl, setEditEmployeePreviewUrl] = useState(null);
+    const [editEmployeePassword, setEditEmployeePassword] = useState("");
+    const [editEmployeeProfilePicture, setEditEmployeeProfilePicture] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [editEmployeeVirtualPath, setEditEmployeeVirtualPath] = useState(null);
     const [selectedEmployee, setSelectedEmployee] = useState("");
     const [projects, setProjects] = useState([]);
     const [newProject, setNewProject] = useState("");
@@ -55,6 +62,7 @@ const AdminDashboard = () => {
     const [newTaskDescription, setNewTaskDescription] = useState("");
     const [activeTab, setActiveTab] = useState("welcome");
     const [showCreateForm, setShowCreateForm] = useState(false);
+    const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [showCreateTaskForm, setShowCreateTaskForm] = useState(false);
     const [errors, setErrors] = useState([]);
     const [success, setSuccess] = useState("");
@@ -95,7 +103,7 @@ const AdminDashboard = () => {
             setEmployees(data);
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
-            setErrors(errorMessages); 
+            setErrors(errorMessages);
         }
     };
 
@@ -105,23 +113,28 @@ const AdminDashboard = () => {
             setErrors(["Employee name, email, and full name are required."]);
             return;
         }
-        const employeeModel = {
-            username: newEmployeeUsername,
-            email: newEmployeeEmail,
-            fullName: newEmployeeFullname,
-            password: newEmployeePassword,
-            virtualPath: "",
-            roles: ["Employee"]
-        };
+
+        const formData = new FormData();
+        formData.append("username", newEmployeeUsername);
+        formData.append("email", newEmployeeEmail);
+        formData.append("fullName", newEmployeeFullname);
+        formData.append("password", newEmployeePassword);
+        formData.append("roles", "Employee");
+        if (newEmployeeProfilePicture) {
+            formData.append("profilePicture", newEmployeeProfilePicture);
+        }
 
         try {
-            await createEmployee(employeeModel);
+            await createEmployee(formData);
             setNewEmployeeEmail('');
             setNewEmployeeFullname('');
             setNewEmployeePassword('');
             setNewEmployeeUsername('');
             setNewEmployeeRole('');
-            setErrors([]);
+            setNewEmployeeProfilePicture(null);
+            setNewEmployeePreviewUrl('');
+            setSuccess("Employee created successfully!");
+            setShowCreateForm(false);
             loadEmployees();
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
@@ -134,23 +147,30 @@ const AdminDashboard = () => {
         setEditEmployeeId(employee.id);
         setEditEmployeeEmail(employee.email);
         setEditEmployeeFullname(employee.fullName);
-        setEditEmployeeRole(employee.role);
+        setEditEmployeeRole(employee.roles);
         setEditEmployeeUsername(employee.username);
+        setEditEmployeePassword("");
+        setEditEmployeeVirtualPath(employee.virtualPath);
+        setEditEmployeeProfilePicture(null);
     };
 
     const handleUpdateEmployee = async () => {
         if (!editEmployeeEmail || !editEmployeeFullname) {
-            setErrors(["Employee name, email, and full name are required."]);
+            setErrors(["Employee email and full name are required."]);
             return;
         }
 
+        setErrors([]);
+        setSuccess("");
+
         const employeeModel = {
             id: editEmployeeId,
-            email: editEmployeeEmail,
             fullName: editEmployeeFullname,
             username: editEmployeeUsername,
-            virtualPath: "",
-            roles: ["Employee"],
+            password: editEmployeePassword,
+            email: editEmployeeEmail,
+            roles: editEmployeeRole,
+            profilePicture: editEmployeeVirtualPath
         };
 
         try {
@@ -159,11 +179,24 @@ const AdminDashboard = () => {
             setEditEmployeeFullname("");
             setEditEmployeeUsername("");
             setEditEmployeeEmail("");
-            setErrors([]);
+            setEditEmployeePassword("");
+            setEditEmployeeProfilePicture(null);
+            setEditEmployeeVirtualPath(null);
+            setShowUpdateForm(false);
+            setSuccess("Employee updated successfully!");
             loadEmployees();
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
             setErrors(errorMessages);
+        }
+    };
+
+    // File change
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setEditEmployeeProfilePicture(file);
+            setEditEmployeeVirtualPath(URL.createObjectURL(file));
         }
     };
 
@@ -493,6 +526,12 @@ const AdminDashboard = () => {
                     Manage employee profiles, roles, and access within your organization.
                 </p>
 
+                {success && (
+                    <div className="alert alert-success rounded-3">
+                        <span className="small">{success}</span>
+                    </div>
+                )}
+
                 {/* Error Display */}
                 {errors.length > 0 && (
                     <div className="alert alert-danger rounded-3">
@@ -511,10 +550,9 @@ const AdminDashboard = () => {
                         className={`btn ${showCreateForm ? "btn-outline-danger" : "btn-outline-success"}`}
                         onClick={() => setShowCreateForm((prev) => !prev)}
                     >
-                        {showCreateForm ? "Cancel" : "Add New Employee"}
+                        {showCreateForm ? "Cancel" : "Create new employee"}
                     </button>
                 </div>
-
 
                 {(showCreateForm || editEmployeeId) && (
                     <div className="mb-5">
@@ -522,58 +560,92 @@ const AdminDashboard = () => {
                         {showCreateForm && (
                             <div className="card p-4 border shadow-sm bg-light rounded-4 mb-4">
                                 <h5 className="text-dark mb-3">Enter Employee Details</h5>
-                                <div className="row g-3 align-items-center">
-                                    <div className="col-md-2">
-                                        <label className="form-label">Full Name</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="e.g. John Doe"
-                                            value={newEmployeeFullname}
-                                            onChange={(e) => setNewEmployeeFullname(e.target.value)}
-                                        />
+                                <div className="row">
+                                    {/* Left Column */}
+                                    <div className="col-md-6">
+                                        <div className="mb-3">
+                                            <label className="form-label">Full Name</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="e.g. John Doe"
+                                                value={newEmployeeFullname}
+                                                onChange={(e) => setNewEmployeeFullname(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label className="form-label">Username</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="e.g. johndoe"
+                                                value={newEmployeeUsername}
+                                                onChange={(e) => setNewEmployeeUsername(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label className="form-label">Password</label>
+                                            <input
+                                                type="password"
+                                                className="form-control"
+                                                placeholder="******"
+                                                value={newEmployeePassword}
+                                                onChange={(e) => setNewEmployeePassword(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label className="form-label">Email</label>
+                                            <input
+                                                type="email"
+                                                className="form-control"
+                                                placeholder="e.g. john.doe@company.com"
+                                                value={newEmployeeEmail}
+                                                onChange={(e) => setNewEmployeeEmail(e.target.value)}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="col-md-3">
-                                        <label className="form-label">Email</label>
-                                        <input
-                                            type="email"
-                                            className="form-control"
-                                            placeholder="e.g. john.doe@company.com"
-                                            value={newEmployeeEmail}
-                                            onChange={(e) => setNewEmployeeEmail(e.target.value)}
-                                        />
+
+                                    {/* Right Column */}
+                                    <div className="col-md-6">
+
+                                        <div className="mb-3">
+                                            <label className="form-label">Role</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value="Employee"
+                                                disabled
+                                            />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label className="form-label">Profile Picture</label>
+                                            <input
+                                                type="file"
+                                                className="form-control"
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+                                                    if (file) {
+                                                        setNewEmployeeProfilePicture(file);
+                                                        setNewEmployeePreviewUrl(URL.createObjectURL(file));
+                                                    }
+                                                }}
+                                            />
+                                            {newEmployeePreviewUrl && (
+                                                <div className="mt-2">
+                                                    <img
+                                                        src={newEmployeePreviewUrl}
+                                                        alt="Profile"
+                                                        className="img-thumbnail"
+                                                        style={{ maxWidth: "300px", height: "auto" }}
+                                                    />
+                                                    <small className="text-muted d-block">Selected profile picture</small>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="col-md-2">
-                                        <label className="form-label">Username</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="e.g. johndoe"
-                                            value={newEmployeeUsername}
-                                            onChange={(e) => setNewEmployeeUsername(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-md-2">
-                                        <label className="form-label">Password</label>
-                                        <input
-                                            type="password"
-                                            className="form-control"
-                                            placeholder="******"
-                                            value={newEmployeePassword}
-                                            onChange={(e) => setNewEmployeePassword(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-md-2">
-                                        <label className="form-label">Role</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value="Employee"
-                                            disabled
-                                        />
-                                    </div>
-                                    <div className="col-md-1 d-grid">
-                                        <label className="form-label invisible">Submit</label>
+
+                                    {/* Submit Button */}
+                                    <div className="col-12 d-flex justify-content-end mt-3">
                                         <button className="btn btn-primary" onClick={handleCreateEmployee}>
                                             Create
                                         </button>
@@ -584,13 +656,10 @@ const AdminDashboard = () => {
 
                         {/* Edit form */}
                         {editEmployeeId && (
-                            <div className="p-4 bg-light border rounded-3">
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h5 className="text-dark mb-3"> Edit Employee</h5>
-
-                                </div>
-                                <div className="row g-3 align-items-center">
-                                    <div className="col-md-2">
+                            <div className="row">
+                                {/* Left Column */}
+                                <div className="col-md-6">
+                                    <div className="mb-3">
                                         <label className="form-label">Full Name</label>
                                         <input
                                             type="text"
@@ -599,16 +668,7 @@ const AdminDashboard = () => {
                                             onChange={(e) => setEditEmployeeFullname(e.target.value)}
                                         />
                                     </div>
-                                    <div className="col-md-3">
-                                        <label className="form-label">Email</label>
-                                        <input
-                                            type="email"
-                                            className="form-control"
-                                            value={editEmployeeEmail}
-                                            onChange={(e) => setEditEmployeeEmail(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-md-2">
+                                    <div className="mb-3">
                                         <label className="form-label">Username</label>
                                         <input
                                             type="text"
@@ -617,7 +677,31 @@ const AdminDashboard = () => {
                                             onChange={(e) => setEditEmployeeUsername(e.target.value)}
                                         />
                                     </div>
-                                    <div className="col-md-2">
+                                    <div className="mb-3">
+                                        <label className="form-label">New Password</label>
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            placeholder="Optional"
+                                            value={editEmployeePassword || ""}
+                                            onChange={(e) => setEditEmployeePassword(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Email</label>
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            value={editEmployeeEmail}
+                                            onChange={(e) => setEditEmployeeEmail(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Right Column */}
+                                <div className="col-md-6">
+
+                                    <div className="mb-3">
                                         <label className="form-label">Role</label>
                                         <input
                                             type="text"
@@ -626,20 +710,51 @@ const AdminDashboard = () => {
                                             disabled
                                         />
                                     </div>
-                                    <div className="col-md-3 d-flex gap-2 align-items-end align-self-end mb-1">
-                                        <button
-                                            className="btn btn btn-success btn-sm"
-                                            onClick={handleUpdateEmployee}
-                                        >
-                                            Update
-                                        </button>
-                                        <button
-                                            className="btn btn btn-warning btn-sm"
-                                            onClick={() => setEditEmployeeId(null)}
-                                        >
-                                            Cancel Edit
-                                        </button>
+                                    <div className="mb-3">
+                                        <label className="form-label">Profile Picture</label>
+                                        <input
+                                            type="file"
+                                            className="form-control"
+                                            onChange={(e) => {
+                                                const file = e.target.files[0];
+                                                if (file) {
+                                                    setEditEmployeeProfilePicture(file);
+                                                    setEditEmployeePreviewUrl(URL.createObjectURL(file)); 
+                                                }
+                                            }}
+                                        />
+
                                     </div>
+                                    {(editEmployeePreviewUrl || editEmployeeVirtualPath) && (
+                                        <div className="mt-2">
+                                            <img
+                                                src={editEmployeePreviewUrl || `https://localhost:7073${editEmployeeVirtualPath}`}
+                                                alt="Profile"
+                                                className="img-thumbnail"
+                                                style={{ maxWidth: "200px", height: "auto" }}
+                                            />
+                                            <small className="text-muted d-block mt-1">
+                                                {editEmployeePreviewUrl ? "Selected profile picture" : "Current profile picture"}
+                                            </small>
+                                        </div>
+                                    )}
+
+                                </div>
+
+                                {/* Buttons */}
+                                <div className="col-12 d-flex gap-2 justify-content-end mt-2">
+                                    <button
+                                        className="btn btn-success btn-sm"
+                                        onClick={handleUpdateEmployee}
+                                    >
+                                        Update
+                                    </button>
+                                    <button
+                                        className="btn btn-warning btn-sm"
+                                        onClick={() => setEditEmployeeId(null)}
+                                    >
+                                        Cancel Edit
+                                    </button>
                                 </div>
                             </div>
                         )}
@@ -770,7 +885,7 @@ const AdminDashboard = () => {
                     </div>
                 )}
 
-                {/* Edit project form */ }
+                {/* Edit project form */}
                 {editProjectId && (
                     <div className="card p-4 border shadow-sm bg-light rounded-4 mb-4">
                         <h5 className="text-dark mb-3">Edit Project Details</h5>
@@ -946,7 +1061,7 @@ const AdminDashboard = () => {
                         </div>
                     </div>
                 )}
-                {/* Edit task form */ }
+                {/* Edit task form */}
                 {editTaskId && (
                     <div className="card p-4 border shadow-sm bg-light rounded-4 mb-4">
                         <h5 className="text-dark mb-3">Edit Task Details</h5>
