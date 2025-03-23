@@ -4,6 +4,7 @@ It is built using ASP.NET Core 8, Entity Framework Core, and React JS.
 This solution follows a clean architecture by separating concerns across multiple projects:
 TeamHub.API - The Web API layer
 TeamHub.Application - Application logic, services, interfaces
+TeamHub.Common - Helpers
 TeamHub.Domain - Core domain entities
 TeamHub.Infrastructure - Database context and data access
 TeamHub.UI - The React frontend interface
@@ -19,9 +20,10 @@ Features Implemented
 - CORS policy setup for React development
 - Project-wide settings via strongly-typed JwtSettings and CorsSettings classes
 - Seed roles and admin user on app start
-- React UI: Role-based views with navigation (Admin Dashboard, Tasks, Login)
+- React UI: Role-based views with navigation (Admin Dashboard, Employee Dashboard, Login)
 - Project structure follows best practices: Controllers, Services/Interfaces, Models/ViewModels
 - Code-first EF Core database approach
+- Exception middleware
 
 Getting Started
 - Clone the repo and open in Visual Studio 2022.
