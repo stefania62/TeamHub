@@ -28,7 +28,7 @@ const Login = () => {
             const decoded = jwtDecode(token);
             const role = decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
-            role === "Administrator" ? navigate("/admin") : navigate("/dashboard");
+            role === "Administrator" ? navigate("/admin/dashboard") : navigate("/employee/dashboard");
         } catch (err) {
             setError("Invalid email or password. Please try again.");
         }

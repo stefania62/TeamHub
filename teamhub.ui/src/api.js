@@ -137,6 +137,55 @@ export const deleteEmployee = async (employeeId) => {
 
 //#endregion
 
+//#region User Profile
+
+// Get current user profile
+export const getCurrentUserProfile = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/user/profile`, {
+            headers: getAuthHeader()
+        });
+        return response.data;
+    } catch (error) {
+        throw formatErrors(error, "An unexpected error occurred while fetching the profile.");
+    }
+};
+
+// Update user profile
+export const updateProfile = async (profileModel) => {
+    try {
+        const formData = new FormData();
+        formData.append("FullName", profileModel.fullName);
+        formData.append("Username", profileModel.username);
+        formData.append("Email", profileModel.email);
+        if (profileModel.password) {
+            formData.append("Password", profileModel.password);
+        }
+        profileModel.roles?.forEach(role => formData.append("Roles", role)); // if roles is array
+
+        if (profileModel.profilePicture) {
+            formData.append("ProfilePicture", profileModel.profilePicture);
+        }
+
+        const response = await axios.put(
+            `${API_BASE_URL}/user/update-profile`,
+            formData,
+            {
+                headers: {
+                    ...getAuthHeader(),
+                    "Content-Type": "multipart/form-data"
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        throw formatErrors(error, "An unexpected error occurred while updating the profile.");
+    }
+};
+
+//#endregion
+
 //#region Project
 
 // Get all projects
@@ -301,7 +350,7 @@ export const completeTask = async (taskId) => {
         await axios.put(`${API_BASE_URL}/tasks/mark-complete/${taskId}`, null, {
             headers: getAuthHeader()
         });
-      
+
         return { success: true };
     } catch (error) {
         const backendMessage = error?.response?.data?.message;

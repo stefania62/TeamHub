@@ -20,15 +20,14 @@ const Navbar = () => {
                     <ul className="navbar-nav ms-auto">
                         {token && (
                             <>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard">Dashboard</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/tasks">Tasks</Link>
-                                </li>
                                 {role === "Administrator" && (
                                     <li className="nav-item">
-                                        <Link className="nav-link" to="/admin">Admin</Link>
+                                        <Link className="nav-link" to="/admin/dashboard">Dashboard</Link>
+                                    </li>
+                                )}
+                                {role === "Employee" && (
+                                    <li className="nav-item">
+                                        <Link className="nav-link" to="/employee/dashboard">Dashboard</Link>
                                     </li>
                                 )}
                                 <li className="nav-item">

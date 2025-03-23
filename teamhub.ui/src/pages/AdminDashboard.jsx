@@ -190,6 +190,7 @@ const AdminDashboard = () => {
             setSuccess("Assigned successfully!");
             loadProjects();
             loadEmployees();
+            loadTasks();
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
             setErrors(errorMessages);
@@ -207,6 +208,7 @@ const AdminDashboard = () => {
             await removeEmployeeFromProject(selectedProject, selectedEmployee);
             setSuccess("Removed successfully!");
             loadProjects();
+            loadTasks();
             loadEmployees();
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
@@ -1023,7 +1025,7 @@ const AdminDashboard = () => {
                                         <tr key={task.id}>
                                             <td>{task.title}</td>
                                             <td>{task.description}</td>
-                                            <td>{task.assignedUsername || "Unassigned"}</td>
+                                            <td>{task.assignedUserName || "Unassigned"}</td>
                                             <td>{task.projectTitle}</td>
                                             <td>
                                                 {task.isCompleted === true ? (
