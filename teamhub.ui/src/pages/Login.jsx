@@ -1,4 +1,5 @@
 ﻿import React, { useState } from "react";
+import { UserRole } from '../constants/roles';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -28,7 +29,7 @@ const Login = () => {
             const decoded = jwtDecode(token);
             const role = decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
-            role === "Administrator" ? navigate("/admin/dashboard") : navigate("/employee/dashboard");
+            role === UserRole.Administrator ? navigate("/admin/dashboard") : navigate("/employee/dashboard");
         } catch (err) {
             setError("Invalid email or password. Please try again.");
         }

@@ -48,7 +48,7 @@ public class AdminController : ControllerBase
     /// Create a new employee user.
     /// </summary>
     [HttpPost("create-employee")]
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = nameof(UserRole.Administrator))]
     public async Task<IActionResult> CreateEmployee([FromForm] UserModel model)
     {
         var result = await _adminService.CreateEmployee(model);
@@ -60,7 +60,7 @@ public class AdminController : ControllerBase
     /// Update user details.
     /// </summary>
     [HttpPut("update-user/{userId}")]
-    [Authorize(Roles = "Administrator")]
+   [Authorize(Roles = nameof(UserRole.Administrator))]
     public async Task<IActionResult> UpdateUser(string userId, [FromForm] UserModel model)
     {
         var result = await _adminService.UpdateUser(userId, model);
@@ -72,7 +72,7 @@ public class AdminController : ControllerBase
     /// Delete a user.
     /// </summary>
     [HttpDelete("delete-user/{userId}")]
-    [Authorize(Roles = "Administrator")]
+   [Authorize(Roles = nameof(UserRole.Administrator))]
     public async Task<IActionResult> DeleteUser(string userId)
     {
         var result = await _adminService.DeleteUser(userId);

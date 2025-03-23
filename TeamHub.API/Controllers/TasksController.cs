@@ -21,7 +21,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "Employee,Administrator")]
+    [Authorize(Roles = $"{nameof(UserRole.Administrator)},{nameof(UserRole.Employee)}")]
     public async Task<IActionResult> GetTasks()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -33,7 +33,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Employee,Administrator")]
+    [Authorize(Roles = $"{nameof(UserRole.Administrator)},{nameof(UserRole.Employee)}")]
     public async Task<IActionResult> CreateTask([FromBody] TaskModel model)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -45,7 +45,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Employee,Administrator")]
+    [Authorize(Roles = $"{nameof(UserRole.Administrator)},{nameof(UserRole.Employee)}")]
     public async Task<IActionResult> UpdateTask(int id, [FromBody] TaskModel model)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -57,7 +57,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPut("mark-complete/{id}")]
-    [Authorize(Roles = "Employee,Administrator")]
+    [Authorize(Roles = $"{nameof(UserRole.Administrator)},{nameof(UserRole.Employee)}")]
     public async Task<IActionResult> CompleteTask(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -69,7 +69,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Administrator")]
+   [Authorize(Roles = nameof(UserRole.Administrator))]
     public async Task<IActionResult> DeleteTask(int id)
     {
         var result = await _taskService.DeleteTask(id);
@@ -78,7 +78,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPost("{taskId}/assign/{employeeId}")]
-    [Authorize(Roles = "Administrator,Employee")]
+    [Authorize(Roles = $"{nameof(UserRole.Administrator)},{nameof(UserRole.Employee)}")]
     public async Task<IActionResult> AssignEmployeeToTask(int taskId, string employeeId)
     {
         var result = await _taskService.AssignEmployeeToTask(taskId, employeeId);
@@ -88,7 +88,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpDelete("{taskId}/remove/{employeeId}")]
-    [Authorize(Roles = "Administrator,Employee")]
+   [Authorize(Roles = $"{nameof(UserRole.Administrator)},{nameof(UserRole.Employee)}")]
     public async Task<IActionResult> RemoveEmployeeFromTask(int taskId, string employeeId)
     {
         var result = await _taskService.RemoveEmployeeFromTask(taskId);

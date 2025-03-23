@@ -33,7 +33,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Administrator")]
+   [Authorize(Roles = nameof(UserRole.Administrator))]
     public async Task<IActionResult> CreateProject([FromBody] ProjectModel model)
     {
         var result = await _projectService.CreateProject(model);
@@ -43,7 +43,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Administrator")]
+   [Authorize(Roles = nameof(UserRole.Administrator))]
     public async Task<IActionResult> UpdateProject(int id, [FromBody] ProjectModel model)
     {
         var result = await _projectService.UpdateProject(id, model);
@@ -53,7 +53,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Administrator")]
+   [Authorize(Roles = nameof(UserRole.Administrator))]
     public async Task<IActionResult> DeleteProject(int id)
     {
         var result = await _projectService.DeleteProject(id);
@@ -63,7 +63,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPost("{projectId}/assign/{employeeId}")]
-    [Authorize(Roles = "Administrator")]
+   [Authorize(Roles = nameof(UserRole.Administrator))]
     public async Task<IActionResult> AssignEmployeeToProject(int projectId, string employeeId)
     {
         var result = await _projectService.AssignEmployeeToProject(projectId, employeeId);
@@ -73,7 +73,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpDelete("{projectId}/remove/{employeeId}")]
-    [Authorize(Roles = "Administrator")]
+   [Authorize(Roles = nameof(UserRole.Administrator))]
     public async Task<IActionResult> RemoveEmployeeFromProject(int projectId, string employeeId)
     {
         var result = await _projectService.RemoveEmployeeFromProject(projectId, employeeId);

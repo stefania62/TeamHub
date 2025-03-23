@@ -1,6 +1,7 @@
 ﻿import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getUserRole } from "../utils/auth";
+import { UserRole } from '../constants/roles';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -20,12 +21,12 @@ const Navbar = () => {
                     <ul className="navbar-nav ms-auto">
                         {token && (
                             <>
-                                {role === "Administrator" && (
+                                {role === UserRole.Administrator && (
                                     <li className="nav-item">
                                         <Link className="nav-link" to="/admin/dashboard">Dashboard</Link>
                                     </li>
                                 )}
-                                {role === "Employee" && (
+                                {role === UserRole.Employee && (
                                     <li className="nav-item">
                                         <Link className="nav-link" to="/employee/dashboard">Dashboard</Link>
                                     </li>

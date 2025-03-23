@@ -38,7 +38,7 @@ public class AdminService : IAdminService
 
             IQueryable<ApplicationUser> query;
 
-            if (currentUserRoles.Contains("Administrator"))
+            if (currentUserRoles.Contains(nameof(UserRole.Administrator)))
             {
                 query = _userManager.Users;
             }
@@ -164,7 +164,7 @@ public class AdminService : IAdminService
                 return Result<UserModel>.Fail(errorMessages);
             }
 
-            await _userManager.AddToRoleAsync(user, "Employee");
+            await _userManager.AddToRoleAsync(user, nameof(UserRole.Employee));
 
             return Result<UserModel>.Ok(new UserModel
             {
@@ -173,7 +173,7 @@ public class AdminService : IAdminService
                 Email = user.Email,
                 Username = user.UserName,
                 VirtualPath = user.ImageVirtualPath,
-                Roles = new List<string> { "Employee" }
+                Roles = new List<string> { nameof(UserRole.Employee) }
             });
         }
         catch (Exception ex)

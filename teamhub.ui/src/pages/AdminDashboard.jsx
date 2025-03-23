@@ -1,4 +1,5 @@
 ﻿import React, { useEffect, useState } from "react";
+import { UserRole } from '../constants/roles';
 import {
     getEmployees,
     createEmployee,
@@ -784,7 +785,7 @@ const AdminDashboard = () => {
                                             <td>{employee.username}</td>
                                             <td>{employee.roles}</td>
                                             <td className="text-center ">
-                                                {!employee.roles.includes("Administrator") && (
+                                                {!employee.roles.includes(UserRole.Administrator) && (
                                                     <>
                                                         <button
                                                             className="btn btn-outline-success btn-sm me-2"

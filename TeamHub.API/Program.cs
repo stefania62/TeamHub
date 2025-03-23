@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using TeamHub.Application.Interfaces;
+using TeamHub.Application.Models;
 using TeamHub.Application.Services;
 using TeamHub.Domain.Entities;
 using TeamHub.Infrastructure.Data;
@@ -77,7 +78,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Administrator", policy => policy.RequireRole("Administrator"));
+    options.AddPolicy(nameof(UserRole.Administrator), policy => policy.RequireRole(nameof(UserRole.Administrator)));
 });
 // Swagger
 builder.Services.AddSwaggerGen(options =>

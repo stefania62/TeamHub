@@ -29,7 +29,7 @@ public class ProjectService : IProjectService
         {
             List<Project> projects;
 
-            if (userRoles.Contains("Administrator"))
+            if (userRoles.Contains(nameof(UserRole.Administrator)))
             {
                 projects = await _context.Projects.Include(p => p.Tasks).ToListAsync();
             }

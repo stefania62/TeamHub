@@ -29,7 +29,7 @@ public class TaskService : ITaskService
         {
             List<TaskItem> tasks;
 
-            if (userRoles.Contains("Administrator"))
+            if (userRoles.Contains(nameof(UserRole.Administrator)))
             {
                 tasks = await _context.Tasks.Include(t => t.Project)
                     .Include(t => t.AssignedTo)
@@ -76,7 +76,7 @@ public class TaskService : ITaskService
                 .Include(p => p.Employees)
                 .FirstOrDefaultAsync(p => p.Id == model.ProjectId);
 
-            if (project == null || (userRoles.Contains("Employee") && !project.Employees.Any(e => e.EmployeeId == userId)))
+            if (project == null || (userRoles.Contains(nameof(UserRole.Employee)) && !project.Employees.Any(e => e.EmployeeId == userId)))
             {
                 _logger.LogWarning("Unauthorized task creation attempt by user {UserId} for project {ProjectId}", userId, model.ProjectId);
                 return Result<TaskModel>.Fail("Not authorized or project not found.");
@@ -88,7 +88,7 @@ public class TaskService : ITaskService
                 Description = model.Description,
                 IsCompleted = model.IsCompleted,
                 ProjectId = model.ProjectId,
-                AssignedToId = userRoles.Contains("Employee") ? userId : null
+                AssignedToId = userRoles.Contains(nameof(UserRole.Employee)) ? userId : null
             };
 
             _context.Tasks.Add(task);
@@ -119,7 +119,7 @@ public class TaskService : ITaskService
         try
         {
             var task = await _context.Tasks.FindAsync(taskId);
-            if (task == null || (userRoles.Contains("Employee") && task.AssignedToId != userId))
+            if (task == null || (userRoles.Contains(nameof(UserRole.Employee)) && task.AssignedToId != userId))
             {
                 _logger.LogWarning("Unauthorized task update attempt by user {UserId} for task {TaskId}", userId, taskId);
                 return Result<bool>.Fail("Not authorized or task not found.");
@@ -146,7 +146,7 @@ public class TaskService : ITaskService
         try
         {
             var task = await _context.Tasks.FindAsync(taskId);
-            if (task == null || (userRoles.Contains("Employee") && task.AssignedToId != userId))
+            if (task == null || (userRoles.Contains(nameof(UserRole.Employee)) && task.AssignedToId != userId))
             {
                 _logger.LogWarning("Unauthorized task completion attempt by user {UserId} for task {TaskId}", userId, taskId);
                 return Result<bool>.Fail("Not authorized or task not found.");
