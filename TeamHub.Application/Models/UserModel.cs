@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace TeamHub.Application.Models;
 
@@ -40,6 +41,11 @@ public class UserModel
     [StringLength(20, MinimumLength = 6, ErrorMessage = "Password must be between 6-20 characters and must contain at least one" +
                                                         " non-alphanumeric character, one digit, and one uppercase letter.")]
     public string? Password { get; set; }
+
+    /// <summary>
+    /// Gets or sets the profile picture uploaded by the user. 
+    /// </summary>
+    public IFormFile? ProfilePicture { get; set; }
 
     /// <summary>
     /// Gets or sets the optional virtual path to the user's profile picture.

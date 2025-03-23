@@ -50,4 +50,9 @@ public class TaskModel
     /// Gets or sets the name of the user assigned to the task.
     /// </summary>
     public string? AssignedUserName { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the task is assigned to current user.
+    /// </summary>
+    public bool AssignedToCurrentUser { get; set; }
 }

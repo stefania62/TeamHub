@@ -31,7 +31,9 @@ public class TaskService : ITaskService
 
             if (userRoles.Contains("Administrator"))
             {
-                tasks = await _context.Tasks.Include(t => t.Project).ToListAsync();
+                tasks = await _context.Tasks.Include(t => t.Project)
+                    .Include(t => t.AssignedTo)
+                    .ToListAsync();
             }
             else
             {
@@ -52,7 +54,8 @@ public class TaskService : ITaskService
                 ProjectId = task.ProjectId,
                 ProjectTitle = task.Project.Title,
                 AssignedUserId = task.AssignedToId,
-                AssignedUserName = task.AssignedTo?.FullName
+                AssignedUserName = task.AssignedTo?.FullName,
+                AssignedToCurrentUser = task.AssignedToId == userId
             }).ToList();
 
             return Result<List<TaskModel>>.Ok(result);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TeamHub.Application.Interfaces;
 using TeamHub.Application.Models;
 
@@ -10,7 +11,7 @@ namespace TeamHub.API.Controllers;
 /// </summary>
 [Route("api/admin")]
 [ApiController]
-[Authorize(Roles = "Administrator")]
+[Authorize]
 public class AdminController : ControllerBase
 {
     private readonly IAdminService _adminService;
@@ -26,7 +27,8 @@ public class AdminController : ControllerBase
     [HttpGet("users")]
     public async Task<IActionResult> GetAllUsers()
     {
-        var result = await _adminService.GetAllUsers();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var result = await _adminService.GetAllUsers(userId);
         if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
         return Ok(result.Data);
     }
@@ -46,6 +48,7 @@ public class AdminController : ControllerBase
     /// Create a new employee user.
     /// </summary>
     [HttpPost("create-employee")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> CreateEmployee([FromBody] UserModel model)
     {
         var result = await _adminService.CreateEmployee(model);
@@ -57,6 +60,7 @@ public class AdminController : ControllerBase
     /// Update user details.
     /// </summary>
     [HttpPut("update-user/{userId}")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> UpdateUser(string userId, [FromBody] UserModel model)
     {
         var result = await _adminService.UpdateUser(userId, model);
@@ -68,6 +72,7 @@ public class AdminController : ControllerBase
     /// Delete a user.
     /// </summary>
     [HttpDelete("delete-user/{userId}")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteUser(string userId)
     {
         var result = await _adminService.DeleteUser(userId);

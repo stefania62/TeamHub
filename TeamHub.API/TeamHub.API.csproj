@@ -32,4 +32,8 @@
     <ProjectReference Include="..\TeamHub.Infrastructure\TeamHub.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

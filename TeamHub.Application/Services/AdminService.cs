@@ -26,23 +26,53 @@ public class AdminService : IAdminService
     }
 
     /// <inheritdoc cref="IAdminService.GetAllUsers"/>
-    public async Task<Result<List<UserModel>>> GetAllUsers()
+    public async Task<Result<List<UserModel>>> GetAllUsers(string? userId)
     {
         try
         {
-            var users = await _userManager.Users.ToListAsync();
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            if (currentUser == null)
+                return Result<List<UserModel>>.Fail("User not found.");
+
+            var currentUserRoles = await _userManager.GetRolesAsync(currentUser);
+
+            IQueryable<ApplicationUser> query;
+
+            if (currentUserRoles.Contains("Administrator"))
+            {
+                query = _userManager.Users;
+            }
+            else
+            {
+                var userProjectIds = await _context.ProjectEmployees
+                    .Where(pe => pe.EmployeeId == userId)
+                    .Select(pe => pe.ProjectId)
+                    .ToListAsync();
+
+                var userIdsInSameProjects = await _context.ProjectEmployees
+                    .Where(pe => userProjectIds.Contains(pe.ProjectId))
+                    .Select(pe => pe.EmployeeId)
+                    .Distinct()
+                    .ToListAsync();
+
+                query = _userManager.Users.Where(u => userIdsInSameProjects.Contains(u.Id));
+            }
+
+            var users = await query.ToListAsync();
+
             var userList = new List<UserModel>();
 
             foreach (var user in users)
             {
-                var roles = await _userManager.GetRolesAsync(user);
+                var roles = await _userManager.GetRolesAsync(user); 
                 userList.Add(new UserModel
                 {
                     Id = user.Id,
                     FullName = user.FullName,
                     Email = user.Email,
                     Username = user.UserName,
-                    Roles = roles.ToList()
+                    Roles = roles.ToList(),
+                    VirtualPath = user.ImageVirtualPath
                 });
             }
 
@@ -55,6 +85,7 @@ public class AdminService : IAdminService
             return Result<List<UserModel>>.Fail("An unexpected error occurred while fetching users.");
         }
     }
+
 
     /// <inheritdoc cref="IAdminService.GetUserById"/>
     public async Task<Result<UserModel>> GetUserById(string userId)

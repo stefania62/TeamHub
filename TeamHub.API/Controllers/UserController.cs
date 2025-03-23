@@ -27,22 +27,21 @@ namespace TeamHub.API.Controllers
         public async Task<IActionResult> GetProfile()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var profile = await _userService.GetProfile(userId);
-            if (profile == null) return NotFound("User not found");
+            var result = await _userService.GetProfile(userId);
+            if (!result.Success) return BadRequest(new {message = result.ErrorMessage});
 
-            return Ok(profile);
+            return Ok(result.Data);
         }
 
         [HttpPut("update-profile")]
-        public async Task<IActionResult> UpdateProfile([FromBody] UserModel model)
+        public async Task<IActionResult> UpdateProfile([FromForm] UserModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var success = await _userService.UpdateProfile(userId, model);
-            if (!success) return BadRequest("Profile update failed.");
+            var result = await _userService.UpdateProfile(userId, model);
+            if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
 
-            return Ok(new { message = "Profile updated successfully" });
+            return Ok(result.Data);
         }
 
-        //TODO - Profile picture 
     }
 }

@@ -12,7 +12,7 @@ public interface IAdminService
     /// Retrieves all users in the system.
     /// </summary>
     /// <returns>A result containing a list of user models.</returns>
-    Task<Result<List<UserModel>>> GetAllUsers();
+    Task<Result<List<UserModel>>> GetAllUsers(string? userId);
 
     /// <summary>
     /// Retrieves a specific user by their ID.

@@ -1,4 +1,5 @@
 ﻿using TeamHub.Application.Models;
+using TeamHub.Application.Result;
 
 namespace TeamHub.Application.Interfaces;
 
@@ -12,7 +13,7 @@ public interface IUserService
     /// </summary>
     /// <param name="userId">The unique identifier of the user.</param>
     /// <returns>A <see cref="UserModel"/> containing the user's profile details.</returns>
-    Task<UserModel> GetProfile(string userId);
+    Task<Result<UserModel>> GetProfile(string userId);
 
     /// <summary>
     /// Updates the profile information of a user.
@@ -20,5 +21,5 @@ public interface IUserService
     /// <param name="userId">The unique identifier of the user.</param>
     /// <param name="model">The updated user profile data.</param>
     /// <returns>A boolean indicating whether the update was successful.</returns>
-    Task<bool> UpdateProfile(string userId, UserModel model);
+    Task<Result<bool>> UpdateProfile(string userId, UserModel model);
 }

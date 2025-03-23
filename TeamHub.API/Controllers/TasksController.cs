@@ -78,7 +78,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPost("{taskId}/assign/{employeeId}")]
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator,Employee")]
     public async Task<IActionResult> AssignEmployeeToTask(int taskId, string employeeId)
     {
         var result = await _taskService.AssignEmployeeToTask(taskId, employeeId);
@@ -88,7 +88,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpDelete("{taskId}/remove/{employeeId}")]
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator,Employee")]
     public async Task<IActionResult> RemoveEmployeeFromTask(int taskId, string employeeId)
     {
         var result = await _taskService.RemoveEmployeeFromTask(taskId);
