@@ -27,6 +27,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Common", "TeamHub.C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Common", "TeamHub.Common", "{AC9FB29C-CC95-4032-BDB9-D890997C101A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Worker", "TeamHub.Worker", "{D7921B77-AFB3-42AE-9C8D-6CA0F127BF84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamHub.Worker", "TeamHub.Worker\TeamHub.Worker.csproj", "{97319AE0-3332-4587-A99E-F285F9DF6E20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +63,10 @@ Global
 		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97319AE0-3332-4587-A99E-F285F9DF6E20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97319AE0-3332-4587-A99E-F285F9DF6E20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97319AE0-3332-4587-A99E-F285F9DF6E20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97319AE0-3332-4587-A99E-F285F9DF6E20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +78,7 @@ Global
 		{BB369CE8-1132-46F5-BB84-383712972E5B} = {3A4E81BB-5604-421E-AEC7-97DB8A1B0D96}
 		{9C31922B-0794-4567-B191-32F35BCEF49A} = {5C8AC467-3F88-4E4E-9036-4EE648A57B2E}
 		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D} = {AC9FB29C-CC95-4032-BDB9-D890997C101A}
+		{97319AE0-3332-4587-A99E-F285F9DF6E20} = {D7921B77-AFB3-42AE-9C8D-6CA0F127BF84}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2E34694B-69E7-4DD8-99EF-D0C1DDD25750}
