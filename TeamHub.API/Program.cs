@@ -1,4 +1,5 @@
 using System.Text;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using TeamHub.Domain.Entities;
 using TeamHub.Infrastructure.Data.Context;
 using TeamHub.Infrastructure.Data.Middleware;
 using TeamHub.Infrastructure.Data.Settings;
+using TeamHub.Infrastructure.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -118,6 +120,23 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowCredentials());
 });
+
+// RabbitMQ
+builder.Services.AddMassTransit(x =>
+{
+    x.SetKebabCaseEndpointNameFormatter();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration["RabbitMQ:Host"], "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+    });
+});
+
+builder.Services.AddScoped<IEventPublisher, EventPublisher>();
 
 var app = builder.Build();
 

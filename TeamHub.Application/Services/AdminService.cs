@@ -16,12 +16,14 @@ public class AdminService : IAdminService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ApplicationDbContext _context;
+    private readonly IEventPublisher _eventPublisher;
     private readonly ILogger<AdminService> _logger;
 
-    public AdminService(UserManager<ApplicationUser> userManager, ApplicationDbContext context, ILogger<AdminService> logger)
+    public AdminService(UserManager<ApplicationUser> userManager, ApplicationDbContext context,IEventPublisher eventPublisher, ILogger<AdminService> logger)
     {
         _userManager = userManager;
         _context = context;
+        _eventPublisher = eventPublisher;
         _logger = logger;
     }
 
@@ -165,6 +167,9 @@ public class AdminService : IAdminService
             }
 
             await _userManager.AddToRoleAsync(user, nameof(UserRole.Employee));
+
+            // Publish a UserCreated event to the message queue
+            await _eventPublisher.PublishUserCreatedAsync(user.Id, user.Email, user.FullName);
 
             return Result<UserModel>.Ok(new UserModel
             {
