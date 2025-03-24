@@ -1,40 +1,70 @@
-TeamHub is a full-stack project designed for managing employee records, projects, and tasks, following a role-based system with Administrator and Employee roles. 
-It is built using ASP.NET Core 8, Entity Framework Core, and React JS. 
+**TeamHub** is a full-stack project designed for managing employees, projects, and tasks in a role-based system. 
+Built with **ASP.NET Core 8**, **Entity Framework Core** and **ReactJS**, TeamHub is designed using **Clean Architecture** principles with full separation of concerns.
 
-This solution follows a clean architecture by separating concerns across multiple projects:
-TeamHub.API - The Web API layer
-TeamHub.Application - Application logic, services, interfaces
-TeamHub.Common - Helpers
-TeamHub.Domain - Core domain entities
-TeamHub.Infrastructure - Database context and data access
-TeamHub.UI - The React frontend interface
+---
 
-Features Implemented
+## 🧱 Architecture Overview
+**TeamHub.API** - ASP.NET Core Web API
+**TeamHub.Application** - Application logic, interfaces and services
+**TeamHub.Common** - Helpers and utilities
+**TeamHub.Domain** - Core domain models
+**TeamHub.Infrastructure.Data** – EF Core DbContext and data access logic
+**TeamHub.Infrastructure.Net** – External services 
+**TeamHub.Contracts** – Shared message contracts for events
+**TeamHub.Worker** – Background worker 
+**TeamHub.UI** - The ReactJS frontend interface
+
+---
+
+## ✨ Features
 
 - JWT-based Login (Admin-managed users only)
-- User Roles: Administrator / Employee
-- Admin can CRUD Users, Projects, Tasks, and assign users to projects/tasks
+- User roles: Administrator and Employee
+- Admin can manage and assign users, projects, tasks
 - Employees can view project-related tasks, update their profile, mark own tasks as complete, and assign tasks to peers in shared projects
-- Profile picture upload support (stored as virtual path)
+- Profile picture upload
 - Swagger API documentation
-- CORS policy setup for React development
-- Project-wide settings via strongly-typed JwtSettings and CorsSettings classes
-- Seed roles and admin user on app start
-- React UI: Role-based views with navigation (Admin Dashboard, Employee Dashboard, Login)
-- Project structure follows best practices: Controllers, Services/Interfaces, Models/ViewModels
-- Code-first EF Core database approach
+- CORS policy for frontend integration
+- Strongly-typed settings via `JwtSettings`, `CorsSettings`
+- Admin user and roles seeded on app start
+- Role-based React UI with dashboards
 - Exception middleware
+- Event-driven email notifications using RabbitMQ and MassTransit
 
-Getting Started
-- Clone the repo and open in Visual Studio 2022.
-- Update the connection string in appsettings.json to point to your local SQL Server instance.
--  Run the following command to create the database: Update-Database
+---
 
-Seeded Admin Account (used during initial startup):
-- Email: admin@teamhub.com
-- Password: Admin@123
+## 🧩 Prerequisites
 
-Launch the API (TeamHub.API) and React UI (TeamHub.UI) using:
-- dotnet run
-- npm install
-- npm run dev
+To run TeamHub locally, ensure you have the following tools installed:
+
+- .NET SDK 8.0
+- React JS
+- Entity Framework Core
+- Microsoft SQL Server 2019/2022
+- SQL Server Management Studio 19 (SSMS)
+- Microsoft Visual Studio 2022
+
+---
+
+## 🚀 Getting Started
+
+## ⚙️ Backend Setup & Run
+1. Clone the repo and open in **Visual Studio 2022**
+2. Update `appsettings.json` → `DefaultConnection` with your SQL Server
+3. Run EF Core migration: Update-Database
+4. Start the API: dotnet run --project TeamHub.API
+
+## ⚙️ Frontend Setup & Run
+cd TeamHub.UI
+npm install
+npm run dev
+
+## ⚙️ Worker Setup & Run
+- dotnet run --project TeamHub.Worker (Make sure RabbitMQ is running first)
+
+⚠️ Note:
+Email functionality uses a **private Gmail account configured locally for testing**.  
+For security reasons, **SMTP credentials are not included** in the repository.
+Please configure your own SMTP provider (e.g., Gmail, Outlook, SendGrid, Mailgun) 
+
+---
