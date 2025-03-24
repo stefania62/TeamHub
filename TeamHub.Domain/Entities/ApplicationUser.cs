@@ -15,7 +15,7 @@ public class ApplicationUser : IdentityUser
     /// <summary>
     /// Gets or sets the virtual path to the user's profile picture.
     /// </summary>
-    public string? ImageVirtualPath { get; set; } = string.Empty;
+    public string? ImageVirtualPath { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of project associations for the user.

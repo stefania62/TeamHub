@@ -5,5 +5,8 @@
 /// </summary>
 public class CorsSettings
 {
-    public string[] AllowedOrigins { get; set; }
+    /// <summary>
+    /// Gets or sets the list of allowed origins for cross-origin requests.
+    /// </summary>
+    public string[] AllowedOrigins { get; set; } = [];
 }

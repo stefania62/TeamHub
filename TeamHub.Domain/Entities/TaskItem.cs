@@ -18,7 +18,7 @@ public class TaskItem
     /// <summary>
     /// Gets or sets the optional description of the task.
     /// </summary>
-    public string? Description { get; set; } = string.Empty;
+    public string? Description { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the task is completed.
@@ -38,7 +38,7 @@ public class TaskItem
     /// <summary>
     /// Gets or sets the ID of the user assigned to this task.
     /// </summary>
-    public string? AssignedToId { get; set; } = string.Empty;
+    public string? AssignedToId { get; set; }
 
     /// <summary>
     /// Gets or sets the user assigned to this task.

@@ -15,12 +15,14 @@ namespace TeamHub.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IWebHostEnvironment _env;
 
-        public UserController(IUserService userService, IWebHostEnvironment env)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserController"/>.
+        /// </summary>
+        /// <param name="userService">An implementation of <see cref="IUserService"/>.</param>
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _env = env;
         }
 
         [HttpGet("profile")]
@@ -42,6 +44,5 @@ namespace TeamHub.API.Controllers
 
             return Ok(result.Data);
         }
-
     }
 }

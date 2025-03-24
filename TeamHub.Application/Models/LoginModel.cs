@@ -8,10 +8,10 @@ public class LoginModel
     /// <summary>
     /// Gets or sets the email address of the user.
     /// </summary>
-    public string Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the password of the user.
     /// </summary>
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 }

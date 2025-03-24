@@ -17,7 +17,7 @@ public class TaskModel
     /// </summary>
     [Required(ErrorMessage = "Task title is required.")]
     [StringLength(20, ErrorMessage = "Task title cannot exceed 20 characters.")]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the description of the task.
@@ -39,7 +39,7 @@ public class TaskModel
     /// <summary>
     /// Gets or sets the name of the project.
     /// </summary>
-    public string ProjectTitle { get; set; }
+    public string ProjectTitle { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the ID of the user assigned to the task.
@@ -54,5 +54,5 @@ public class TaskModel
     /// <summary>
     /// Gets or sets a value indicating whether the task is assigned to current user.
     /// </summary>
-    public bool AssignedToCurrentUser { get; set; }
+    public bool AssignedToCurrentUser { get; set; } = false;
 }

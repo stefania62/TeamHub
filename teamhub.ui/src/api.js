@@ -1,6 +1,5 @@
 ﻿import axios from "axios";
-
-export const API_BASE_URL = "https://localhost:7073/api";
+import { API_BASE_URL } from '../constants/urls';
 
 // Token
 const getAuthHeader = () => {

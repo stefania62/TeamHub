@@ -18,7 +18,7 @@ public class ProjectModel
     /// </summary>
     [Required(ErrorMessage = "Project name is required.")]
     [StringLength(15, ErrorMessage = "Project name cannot exceed 15 characters.")]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the description of the project.

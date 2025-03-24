@@ -1,5 +1,6 @@
 ﻿import React, { useState } from "react";
 import { UserRole } from '../constants/roles';
+import { API_BASE_URL } from '../constants/urls';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -18,7 +19,7 @@ const Login = () => {
         setError(null);
 
         try {
-            const response = await axios.post("https://localhost:7073/api/auth/login", {
+            const response = await axios.post(`${API_BASE_URL}/auth/login`, {
                 email,
                 password,
             });
@@ -78,7 +79,7 @@ const Login = () => {
                         <div className="position-relative">
                             <input
                                 type={showPassword ? "text" : "password"}
-                                className="form-control pe-5" 
+                                className="form-control pe-5"
                                 placeholder="Enter your password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}

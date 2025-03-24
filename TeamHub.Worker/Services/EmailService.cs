@@ -11,7 +11,7 @@ public class EmailService : IEmailService
     private readonly IConfiguration _configuration;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailService"/> class.
+    /// Initializes a new instance of the <see cref="EmailService"/>.
     /// </summary>
     /// <param name="configuration">Application configuration used to retrieve SMTP settings.</param>
     public EmailService(IConfiguration configuration)

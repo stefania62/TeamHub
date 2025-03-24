@@ -21,10 +21,13 @@ public class AuthService : IAuthService
     private readonly JwtSettings _jwtSettings;
     private readonly ILogger<AuthService> _logger;
 
-    public AuthService(
-        UserManager<ApplicationUser> userManager,
-        IOptions<JwtSettings> jwtOptions,
-        ILogger<AuthService> logger)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuthService"/>.
+    /// </summary>
+    /// <param name="userManager">Handles user-related operations.</param>
+    /// <param name="jwtOptions">JWT settings used for generating tokens.</param>
+    /// <param name="logger">Handles logging.</param>
+    public AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtSettings> jwtOptions, ILogger<AuthService> logger)
     {
         _userManager = userManager;
         _jwtSettings = jwtOptions.Value;

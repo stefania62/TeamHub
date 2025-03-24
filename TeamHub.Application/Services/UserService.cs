@@ -15,6 +15,11 @@ public class UserService : IUserService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ILogger<UserService> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UserService"/>.
+    /// </summary>
+    /// <param name="userManager">Handles user-related operations.</param>
+    /// <param name="logger">Handles logging.</param>
     public UserService(UserManager<ApplicationUser> userManager, ILogger<UserService> logger)
     {
         _userManager = userManager;

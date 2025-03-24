@@ -16,6 +16,10 @@ public class AdminController : ControllerBase
 {
     private readonly IAdminService _adminService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AdminController"/>.
+    /// </summary>
+    /// <param name="adminService">An implementation of <see cref="IAdminService"/>.</param>
     public AdminController(IAdminService adminService)
     {
         _adminService = adminService;

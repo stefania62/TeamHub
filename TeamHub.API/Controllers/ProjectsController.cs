@@ -15,6 +15,10 @@ public class ProjectsController : ControllerBase
 {
     private readonly IProjectService _projectService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ProjectsController"/>.
+    /// </summary>
+    /// <param name="projectService">An implementation of <see cref="IProjectService"/>.</param>
     public ProjectsController(IProjectService projectService)
     {
         _projectService = projectService;

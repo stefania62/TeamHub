@@ -19,7 +19,14 @@ public class AdminService : IAdminService
     private readonly IEventPublisher _eventPublisher;
     private readonly ILogger<AdminService> _logger;
 
-    public AdminService(UserManager<ApplicationUser> userManager, ApplicationDbContext context,IEventPublisher eventPublisher, ILogger<AdminService> logger)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AdminService"/>.
+    /// </summary>
+    /// <param name="userManager">Handles user-related operations.</param>
+    /// <param name="context">Database context for accessing data.</param>
+    /// <param name="eventPublisher">Used to publish events.</param>
+    /// <param name="logger">Handles logging.</param>
+    public AdminService(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IEventPublisher eventPublisher, ILogger<AdminService> logger)
     {
         _userManager = userManager;
         _context = context;
@@ -66,7 +73,7 @@ public class AdminService : IAdminService
 
             foreach (var user in users)
             {
-                var roles = await _userManager.GetRolesAsync(user); 
+                var roles = await _userManager.GetRolesAsync(user);
                 userList.Add(new UserModel
                 {
                     Id = user.Id,

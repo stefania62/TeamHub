@@ -9,6 +9,10 @@ namespace TeamHub.Infrastructure.Data.Context;
 /// </summary>
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
+    /// <summary>
+    /// Creates a new instance of the ApplicationDbContext.
+    /// </summary>
+    /// <param name="options">The options used to configure the database context.</param>
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }

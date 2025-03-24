@@ -12,7 +12,7 @@ public class UserCreatedConsumer : IConsumer<UserCreatedEvent>
     private readonly IEmailService _emailService;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="UserCreatedConsumer"/> class.
+    /// Initializes a new instance of the <see cref="UserCreatedConsumer"/>.
     /// </summary>
     /// <param name="emailService">The email service.</param>
     public UserCreatedConsumer(IEmailService emailService)

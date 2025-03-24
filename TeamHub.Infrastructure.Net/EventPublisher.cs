@@ -12,7 +12,7 @@ public class EventPublisher : IEventPublisher
     private readonly IPublishEndpoint _publishEndpoint;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EventPublisher"/> class.
+    /// Initializes a new instance of the <see cref="EventPublisher"/>.
     /// </summary>
     /// <param name="publishEndpoint">
     /// The MassTransit publish endpoint.

@@ -10,7 +10,7 @@ public class Result<T>
     /// <summary>
     /// Indicates whether the operation was successful.
     /// </summary>
-    public bool Success { get; set; }
+    public bool Success { get; set; } = false;
 
     /// <summary>
     /// The error message returned if the operation failed.

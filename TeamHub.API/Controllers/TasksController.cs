@@ -15,6 +15,10 @@ public class TasksController : ControllerBase
 {
     private readonly ITaskService _taskService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TasksController"/>.
+    /// </summary>
+    /// <param name="taskService">An implementation of <see cref="ITaskService"/>.</param>
     public TasksController(ITaskService taskService)
     {
         _taskService = taskService;

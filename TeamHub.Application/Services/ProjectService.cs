@@ -16,6 +16,11 @@ public class ProjectService : IProjectService
     private readonly ApplicationDbContext _context;
     private readonly ILogger<ProjectService> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ProjectService"/>.
+    /// </summary>
+    /// <param name="context">Database context for accessing data.</param>
+    /// <param name="logger">Handles logging.</param>
     public ProjectService(ApplicationDbContext context, ILogger<ProjectService> logger)
     {
         _context = context;

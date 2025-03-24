@@ -16,6 +16,11 @@ public class TaskService : ITaskService
     private readonly ApplicationDbContext _context;
     private readonly ILogger<TaskService> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TaskService"/>.
+    /// </summary>
+    /// <param name="context">Database context for accessing data.</param>
+    /// <param name="logger">Handles logging.</param>
     public TaskService(ApplicationDbContext context, ILogger<TaskService> logger)
     {
         _context = context;

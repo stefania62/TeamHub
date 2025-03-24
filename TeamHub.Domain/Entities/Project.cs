@@ -18,7 +18,7 @@ public class Project
     /// <summary>
     /// Gets or sets the description of the project.
     /// </summary>
-    public string? Description { get; set; } = string.Empty;
+    public string? Description { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of employees assigned to this project.

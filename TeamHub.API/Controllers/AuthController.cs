@@ -13,6 +13,10 @@ namespace TeamHub.API.Controllers
     {
         private readonly IAuthService _authService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthController"/>.
+        /// </summary>
+        /// <param name="authService">An implementation of <see cref="IAuthService"/>.</param>
         public AuthController(IAuthService authService)
         {
             _authService = authService;
