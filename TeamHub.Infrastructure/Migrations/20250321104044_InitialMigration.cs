@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace TeamHub.Infrastructure.Migrations
+namespace TeamHub.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration

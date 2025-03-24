@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TeamHub.Domain\TeamHub.Domain.csproj" />
-    <ProjectReference Include="..\TeamHub.Infrastructure\TeamHub.Infrastructure.csproj" />
+    <ProjectReference Include="..\TeamHub.Infrastructure\TeamHub.Infrastructure.Data.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.API", "TeamHub.API\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Domain", "TeamHub.Domain\TeamHub.Domain.csproj", "{8EF646AB-7606-46FB-81AA-472709A1DD3D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Infrastructure", "TeamHub.Infrastructure\TeamHub.Infrastructure.csproj", "{6ED0AE69-47E3-4DFC-96EE-0FBD79B410D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Infrastructure.Data", "TeamHub.Infrastructure\TeamHub.Infrastructure.Data.csproj", "{6ED0AE69-47E3-4DFC-96EE-0FBD79B410D5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Application", "TeamHub.Application\TeamHub.Application.csproj", "{BB369CE8-1132-46F5-BB84-383712972E5B}"
 EndProject

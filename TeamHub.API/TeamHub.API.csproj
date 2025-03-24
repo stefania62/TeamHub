@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TeamHub.Application\TeamHub.Application.csproj" />
-    <ProjectReference Include="..\TeamHub.Infrastructure\TeamHub.Infrastructure.csproj" />
+    <ProjectReference Include="..\TeamHub.Infrastructure\TeamHub.Infrastructure.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

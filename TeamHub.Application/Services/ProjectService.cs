@@ -4,7 +4,7 @@ using TeamHub.Application.Interfaces;
 using TeamHub.Application.Models;
 using TeamHub.Application.Result;
 using TeamHub.Domain.Entities;
-using TeamHub.Infrastructure.Data;
+using TeamHub.Infrastructure.Data.Context;
 
 namespace TeamHub.Application.Services;
 

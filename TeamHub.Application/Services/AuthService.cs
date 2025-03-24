@@ -6,7 +6,7 @@ using System.Text;
 using TeamHub.Application.Interfaces;
 using TeamHub.Application.Models;
 using TeamHub.Domain.Entities;
-using TeamHub.Infrastructure.Settings;
+using TeamHub.Infrastructure.Data.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 

@@ -3,7 +3,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace TeamHub.Infrastructure.Middleware;
+namespace TeamHub.Infrastructure.Data.Middleware;
 
 /// <summary>
 /// Exception handling middleware.

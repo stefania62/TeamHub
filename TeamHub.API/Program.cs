@@ -10,9 +10,9 @@ using TeamHub.Application.Interfaces;
 using TeamHub.Application.Models;
 using TeamHub.Application.Services;
 using TeamHub.Domain.Entities;
-using TeamHub.Infrastructure.Data;
-using TeamHub.Infrastructure.Middleware;
-using TeamHub.Infrastructure.Settings;
+using TeamHub.Infrastructure.Data.Context;
+using TeamHub.Infrastructure.Data.Middleware;
+using TeamHub.Infrastructure.Data.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 

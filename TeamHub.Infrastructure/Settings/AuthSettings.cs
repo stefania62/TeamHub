@@ -1,4 +1,4 @@
-﻿namespace TeamHub.Infrastructure.Settings;
+﻿namespace TeamHub.Infrastructure.Data.Settings;
 
 /// <summary>
 /// Auth settings.

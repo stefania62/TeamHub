@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TeamHub.Domain.Entities;
 
-namespace TeamHub.Infrastructure.Data;
+namespace TeamHub.Infrastructure.Data.Context;
 
 /// <summary>
 /// Database context for TeamHub API.

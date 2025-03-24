@@ -2,9 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using TeamHub.Domain.Entities;
-using TeamHub.Infrastructure.Settings;
+using TeamHub.Infrastructure.Data.Settings;
 
-namespace TeamHub.Infrastructure.Data;
+namespace TeamHub.Infrastructure.Data.Context;
 public static class Seed
 {
     public static async Task SeedRolesAndAdminUser(IServiceProvider serviceProvider)
