@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a task within a project.
 /// </summary>
-public class TaskItem
+public class TaskItem : BaseEntity
 {
     /// <summary>
     /// Gets or sets the unique identifier of the task.

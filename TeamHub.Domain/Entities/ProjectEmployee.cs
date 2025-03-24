@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents the relationship between employees and projects.
 /// </summary>
-public class ProjectEmployee
+public class ProjectEmployee : BaseEntity
 {
     /// <summary>
     /// Gets or sets the ID of the associated project.

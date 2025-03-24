@@ -93,7 +93,8 @@ public class TaskService : ITaskService
                 Description = model.Description,
                 IsCompleted = model.IsCompleted,
                 ProjectId = model.ProjectId,
-                AssignedToId = userRoles.Contains(nameof(UserRole.Employee)) ? userId : null
+                AssignedToId = userRoles.Contains(nameof(UserRole.Employee)) ? userId : null,
+                CreatedAt = DateTime.UtcNow
             };
 
             _context.Tasks.Add(task);
@@ -134,6 +135,8 @@ public class TaskService : ITaskService
             task.Description = model.Description;
             task.ProjectId = model.ProjectId;
             task.IsCompleted = model.IsCompleted;
+            task.UpdatedAt = DateTime.UtcNow;
+
             await _context.SaveChangesAsync();
 
             return Result<bool>.Ok(true);
@@ -158,6 +161,7 @@ public class TaskService : ITaskService
             }
 
             task.IsCompleted = true;
+            task.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             return Result<bool>.Ok(true);
@@ -193,6 +197,7 @@ public class TaskService : ITaskService
             }
 
             task.AssignedToId = employeeId;
+            task.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             return Result<bool>.Ok(true);
@@ -217,6 +222,7 @@ public class TaskService : ITaskService
             }
 
             task.AssignedToId = null;
+            task.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             return Result<bool>.Ok(true);

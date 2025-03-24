@@ -26,4 +26,14 @@ public class ApplicationUser : IdentityUser
     /// Gets or sets the collection of tasks assigned to the user.
     /// </summary>
     public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
+
+    /// <summary>
+    /// The timestamp when the user was created.
+    /// </summary>
+    public DateTime CreatedAt { get; set; }
+
+    /// <summary>
+    /// The timestamp when the user was last updated.
+    /// </summary>
+    public DateTime? UpdatedAt { get; set; }
 }

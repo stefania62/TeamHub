@@ -70,7 +70,8 @@ public class ProjectService : IProjectService
             var project = new Project
             {
                 Title = model.Title,
-                Description = model.Description
+                Description = model.Description,
+                CreatedAt = DateTime.UtcNow
             };
 
             _context.Projects.Add(project);
@@ -104,6 +105,7 @@ public class ProjectService : IProjectService
 
             project.Title = model.Title;
             project.Description = model.Description;
+            project.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("Updated project ID {ProjectId}", project.Id);
@@ -148,7 +150,8 @@ public class ProjectService : IProjectService
             _context.ProjectEmployees.Add(new ProjectEmployee
             {
                 ProjectId = projectId,
-                EmployeeId = employeeId
+                EmployeeId = employeeId,
+                UpdatedAt = DateTime.UtcNow
             });
 
             await _context.SaveChangesAsync();
@@ -177,6 +180,7 @@ public class ProjectService : IProjectService
                 return Result<bool>.Fail("Employee is not part of this project.");
             }
 
+            projectEmployee.UpdatedAt = DateTime.UtcNow;
             _context.ProjectEmployees.Remove(projectEmployee);
             await _context.SaveChangesAsync();
 

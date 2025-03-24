@@ -16,7 +16,7 @@ public class TaskModel
     /// Gets or sets the title of the task.
     /// </summary>
     [Required(ErrorMessage = "Task title is required.")]
-    [StringLength(20, ErrorMessage = "Task title cannot exceed 20 characters.")]
+    [StringLength(30, ErrorMessage = "Task title cannot exceed 30 characters.")]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
@@ -33,7 +33,7 @@ public class TaskModel
     /// <summary>
     /// Gets or sets the ID of the project this task belongs to.
     /// </summary>
-    [Required(ErrorMessage = "Project ID is required.")]
+    [Required(ErrorMessage = "The project is required.")]
     public int ProjectId { get; set; }
 
     /// <summary>

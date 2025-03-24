@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TeamHub.Domain.Entities;
+using TeamHub.Infrastructure.Data.Configurations;
 
 namespace TeamHub.Infrastructure.Data.Context;
 
@@ -25,25 +26,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(builder);
 
-        // Project-Employee Many-to-Many Relationship
-        builder.Entity<ProjectEmployee>()
-            .HasKey(pe => new { pe.ProjectId, pe.EmployeeId });
-
-        builder.Entity<ProjectEmployee>()
-            .HasOne(pe => pe.Project)
-            .WithMany(p => p.Employees)
-            .HasForeignKey(pe => pe.ProjectId);
-
-        builder.Entity<ProjectEmployee>()
-            .HasOne(pe => pe.Employee)
-            .WithMany(e => e.Projects)
-            .HasForeignKey(pe => pe.EmployeeId);
-
-        // Task-Employee Relationship
-        builder.Entity<TaskItem>()
-            .HasOne(t => t.AssignedTo)
-            .WithMany(u => u.Tasks)
-            .HasForeignKey(t => t.AssignedToId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.ApplyConfiguration(new ApplicationUserConfiguration());
+        builder.ApplyConfiguration(new ProjectConfiguration());
+        builder.ApplyConfiguration(new ProjectEmployeeConfiguration());
+        builder.ApplyConfiguration(new TaskItemConfiguration());
     }
 }

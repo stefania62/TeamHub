@@ -81,7 +81,7 @@ public class AdminService : IAdminService
                     Email = user.Email,
                     Username = user.UserName,
                     Roles = roles.ToList(),
-                    VirtualPath = user.ImageVirtualPath
+                    ImageVirtualPath = user.ImageVirtualPath,
                 });
             }
 
@@ -115,7 +115,7 @@ public class AdminService : IAdminService
                 FullName = user.FullName,
                 Email = user.Email,
                 Username = user.UserName,
-                VirtualPath = user.ImageVirtualPath,
+                ImageVirtualPath = user.ImageVirtualPath,
                 Roles = roles.ToList()
             });
         }
@@ -141,13 +141,14 @@ public class AdminService : IAdminService
             {
                 UserName = model.Username,
                 Email = model.Email,
-                FullName = model.FullName
+                FullName = model.FullName,
+                CreatedAt = DateTime.UtcNow
             };
 
             // Save profile picture if provided
-            if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
+            if (model.File != null && model.File.Length > 0)
             {
-                var fileName = $"Img_{DateTime.UtcNow.Ticks}{Path.GetExtension(model.ProfilePicture.FileName)}";
+                var fileName = $"Img_{DateTime.UtcNow.Ticks}{Path.GetExtension(model.File.FileName)}";
                 var folderPath = Path.Combine("wwwroot", "uploads", "profile-pictures");
                 var filePath = Path.Combine(folderPath, fileName);
 
@@ -156,7 +157,7 @@ public class AdminService : IAdminService
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await model.ProfilePicture.CopyToAsync(stream);
+                    await model.File.CopyToAsync(stream);
                 }
 
                 user.ImageVirtualPath = $"/uploads/profile-pictures/{fileName}";
@@ -184,7 +185,7 @@ public class AdminService : IAdminService
                 FullName = user.FullName,
                 Email = user.Email,
                 Username = user.UserName,
-                VirtualPath = user.ImageVirtualPath,
+                ImageVirtualPath = user.ImageVirtualPath,
                 Roles = new List<string> { nameof(UserRole.Employee) }
             });
         }
@@ -210,11 +211,12 @@ public class AdminService : IAdminService
             user.FullName = model.FullName;
             user.Email = model.Email;
             user.UserName = model.Username;
+            user.UpdatedAt = DateTime.UtcNow; 
 
             // Save profile picture if provided
-            if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
+            if (model.File != null && model.File.Length > 0)
             {
-                var fileName = $"{userId}_{DateTime.UtcNow.Ticks}{Path.GetExtension(model.ProfilePicture.FileName)}";
+                var fileName = $"{userId}_{DateTime.UtcNow.Ticks}{Path.GetExtension(model.File.FileName)}";
                 var folderPath = Path.Combine("wwwroot", "uploads", "profile-pictures");
                 var filePath = Path.Combine(folderPath, fileName);
 
@@ -223,7 +225,7 @@ public class AdminService : IAdminService
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await model.ProfilePicture.CopyToAsync(stream);
+                    await model.File.CopyToAsync(stream);
                 }
 
                 user.ImageVirtualPath = $"/uploads/profile-pictures/{fileName}";
@@ -264,7 +266,7 @@ public class AdminService : IAdminService
                 FullName = user.FullName,
                 Email = user.Email,
                 Username = user.UserName,
-                VirtualPath = user.ImageVirtualPath,
+                ImageVirtualPath = user.ImageVirtualPath,
                 Roles = roles.ToList()
             });
         }

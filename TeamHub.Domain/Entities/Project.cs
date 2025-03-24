@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a project.
 /// </summary>
-public class Project
+public class Project : BaseEntity
 {
     /// <summary>
     /// Gets or sets the unique identifier for the project.

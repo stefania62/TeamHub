@@ -17,14 +17,14 @@ public class UserModel
     /// Gets or sets the full name of the user.
     /// </summary>
     [Required(ErrorMessage = "Full Name is required.")]
-    [StringLength(15, MinimumLength = 3, ErrorMessage = "Full Name must be between 3 and 15 characters.")]
+    [StringLength(50, MinimumLength = 3, ErrorMessage = "Full Name must be between 3 and 50 characters.")]
     public string FullName { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the username used for login.
     /// </summary>
     [Required(ErrorMessage = "Username is required.")]
-    [StringLength(10, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 10 characters.")]
+    [StringLength(15, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 15 characters.")]
     [RegularExpression("^[a-zA-Z0-9_]+$",
         ErrorMessage = "Username can only contain letters, numbers, and underscores.")]
     public string Username { get; set; } = string.Empty;
@@ -46,12 +46,12 @@ public class UserModel
     /// <summary>
     /// Gets or sets the profile picture uploaded by the user. 
     /// </summary>
-    public IFormFile? ProfilePicture { get; set; }
+    public IFormFile? File { get; set; }
 
     /// <summary>
     /// Gets or sets the optional virtual path to the user's profile picture.
     /// </summary>
-    public string? VirtualPath { get; set; }
+    public string? ImageVirtualPath { get; set; }
 
     /// <summary>
     /// Gets or sets the roles assigned to the user.

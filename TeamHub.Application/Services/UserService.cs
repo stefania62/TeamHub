@@ -46,7 +46,7 @@ public class UserService : IUserService
                 Email = user.Email,
                 Username = user.UserName,
                 Roles = userRoles.ToList(),
-                VirtualPath = user.ImageVirtualPath
+                ImageVirtualPath = user.ImageVirtualPath
             });
         }
         catch (Exception ex)
@@ -71,11 +71,12 @@ public class UserService : IUserService
             user.FullName = model.FullName;
             user.Email = model.Email;
             user.UserName = model.Username;
+            user.UpdatedAt = DateTime.UtcNow;
 
             // Save profile picture if provided
-            if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
+            if (model.File != null && model.File.Length > 0)
             {
-                var fileName = $"{userId}_{DateTime.UtcNow.Ticks}{Path.GetExtension(model.ProfilePicture.FileName)}";
+                var fileName = $"{userId}_{DateTime.UtcNow.Ticks}{Path.GetExtension(model.File.FileName)}";
                 var folderPath = Path.Combine("wwwroot", "uploads", "profile-pictures");
                 var filePath = Path.Combine(folderPath, fileName);
 
@@ -84,7 +85,7 @@ public class UserService : IUserService
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await model.ProfilePicture.CopyToAsync(stream);
+                    await model.File.CopyToAsync(stream);
                 }
 
                 user.ImageVirtualPath = $"/uploads/profile-pictures/{fileName}";

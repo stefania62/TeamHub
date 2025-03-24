@@ -16,18 +16,14 @@ public class ProjectModel
     /// <summary>
     /// Gets or sets the name of the project.
     /// </summary>
-    [Required(ErrorMessage = "Project name is required.")]
-    [StringLength(15, ErrorMessage = "Project name cannot exceed 15 characters.")]
+    [Required(ErrorMessage = "Project title is required.")]
+    [StringLength(20, ErrorMessage = "Project title cannot exceed 20 characters.")]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the description of the project.
     /// </summary>
-    [StringLength(20, ErrorMessage = "Description cannot exceed 20 characters.")]
+    [StringLength(100, ErrorMessage = "Description cannot exceed 100 characters.")]
     public string? Description { get; set; }
 
-    /// <summary>
-    /// Gets or sets the list of tasks associated with the project.
-    /// </summary>
-    public List<TaskItem> Tasks { get; set; } = new();
 }
