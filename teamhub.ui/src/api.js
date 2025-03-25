@@ -56,12 +56,17 @@ export const getEmployees = async () => {
 };
 
 // Create employee
-export const createEmployee = async (employeeModel) => {
+export const createEmployee = async (formData) => {
     try {
         const response = await axios.post(
             `${API_BASE_URL}/admin/create-employee`,
-            employeeModel,
-            { headers: getAuthHeader() }
+            formData,
+            {
+                headers: {
+                    ...getAuthHeader(),
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
         );
         return response.data;
     } catch (error) {
@@ -94,14 +99,21 @@ export const updateEmployee = async (employeeModel) => {
         }
         employeeModel.roles?.forEach(role => formData.append("Roles", role));
 
-        if (employeeModel.profilePicture) {
-            formData.append("ProfilePicture", employeeModel.profilePicture);
+        if (employeeModel.file) {
+            formData.append("File", employeeModel.file);
+        } else if (employeeModel.imageVirtualPath) {
+            formData.append("ImageVirtualPath", employeeModel.imageVirtualPath);
         }
 
         const response = await axios.put(
             `${API_BASE_URL}/admin/update-user/${employeeModel.id}`,
             formData,
-            { headers: getAuthHeader() }
+            {
+                headers: {
+                    ...getAuthHeader(),
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
         );
         return response.data;
     } catch (error) {
@@ -175,8 +187,8 @@ export const updateProfile = async (profileModel) => {
         }
         profileModel.roles?.forEach(role => formData.append("Roles", role));
 
-        if (profileModel.profilePicture) {
-            formData.append("ProfilePicture", profileModel.profilePicture);
+        if (profileModel.imageVirtualPath) {
+            formData.append("ImageVirtualPath", profileModel.imageVirtualPath);
         }
 
         const response = await axios.put(
@@ -359,7 +371,7 @@ export const updateTask = async (taskModel) => {
 // Mark task as completed
 export const completeTask = async (taskId) => {
     try {
-        await axios.put(`${API_BASE_URL}/tasks/mark-complete/${taskId}`, null, {
+        await axios.patch(`${API_BASE_URL}/tasks/mark-complete/${taskId}`, null, {
             headers: getAuthHeader()
         });
 
@@ -373,7 +385,7 @@ export const completeTask = async (taskId) => {
 // Assign an employee to a task
 export const assignEmployeeToTask = async (tasksId, employeeId) => {
     try {
-        await axios.post(
+        await axios.patch(
             `${API_BASE_URL}/tasks/${tasksId}/assign/${employeeId}`,
             null,
             {
@@ -387,10 +399,11 @@ export const assignEmployeeToTask = async (tasksId, employeeId) => {
 };
 
 // Remove an employee from a project
-export const removeEmployeeFromTask = async (taskId, employeeId) => {
+export const removeEmployeeFromTask = async (tasksId, employeeId) => {
     try {
-        await axios.delete(
-            `${API_BASE_URL}/tasks/${taskId}/remove/${employeeId}`,
+        await axios.patch(
+            `${API_BASE_URL}/tasks/${tasksId}/remove/${employeeId}`,
+            null,
             {
                 headers: getAuthHeader()
             }

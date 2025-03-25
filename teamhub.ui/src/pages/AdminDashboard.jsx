@@ -43,7 +43,7 @@ const AdminDashboard = () => {
     const [projects, setProjects] = useState([]);
     const [newProject, setNewProject] = useState("");
     const [editProjectId, setEditProjectId] = useState("");
-    const [editProjectTitle, seteditProjectTitle] = useState("");
+    const [editProjectTitle, setEditProjectTitle] = useState("");
     const [editProjectDescription, setEditProjectDescription] = useState("");
     const [selectedEmployeeForProject, setselectedEmployeeForProject] = useState("");
     const [showCreateProjectForm, setShowCreateProjectForm] = useState(false);
@@ -122,7 +122,7 @@ const AdminDashboard = () => {
         formData.append("password", newEmployeePassword);
         formData.append("roles", "Employee");
         if (newEmployeeProfilePicture) {
-            formData.append("profilePicture", newEmployeeProfilePicture);
+            formData.append("file", newEmployeeProfilePicture); // ✅ Correct — backend expects File
         }
 
         try {
@@ -151,8 +151,15 @@ const AdminDashboard = () => {
         setEditEmployeeRole(employee.roles);
         setEditEmployeeUsername(employee.username);
         setEditEmployeePassword("");
-        setEditEmployeeVirtualPath(employee.virtualPath);
-        setEditEmployeeProfilePicture(null);
+        setEditEmployeeVirtualPath(employee.imageVirtualPath);
+        if (employee.imageVirtualPath) {
+            setEditEmployeeVirtualPath(employee.imageVirtualPath);
+            setEditEmployeePreviewUrl(`https://localhost:7073${employee.imageVirtualPath}`);
+        } else {
+            setEditEmployeeVirtualPath(null);
+            setEditEmployeePreviewUrl(null);
+        }
+
     };
 
     const handleUpdateEmployee = async () => {
@@ -163,7 +170,6 @@ const AdminDashboard = () => {
 
         setErrors([]);
         setSuccess("");
-
         const employeeModel = {
             id: editEmployeeId,
             fullName: editEmployeeFullname,
@@ -171,7 +177,8 @@ const AdminDashboard = () => {
             password: editEmployeePassword,
             email: editEmployeeEmail,
             roles: editEmployeeRole,
-            profilePicture: editEmployeeVirtualPath
+            imageVirtualPath: editEmployeeVirtualPath,
+            file: editEmployeeProfilePicture 
         };
 
         try {
@@ -189,15 +196,6 @@ const AdminDashboard = () => {
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
             setErrors(errorMessages);
-        }
-    };
-
-    // File change
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setEditEmployeeProfilePicture(file);
-            setEditEmployeeVirtualPath(URL.createObjectURL(file));
         }
     };
 
@@ -225,6 +223,8 @@ const AdminDashboard = () => {
             loadProjects();
             loadEmployees();
             loadTasks();
+            setSelectedProject('');
+            setSelectedEmployee('');
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
             setErrors(errorMessages);
@@ -244,6 +244,8 @@ const AdminDashboard = () => {
             loadProjects();
             loadTasks();
             loadEmployees();
+            setSelectedProject('');
+            setSelectedEmployee('');
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
             setErrors(errorMessages);
@@ -260,8 +262,11 @@ const AdminDashboard = () => {
         try {
             await assignEmployeeToTask(selectedTask, selectedTaskEmployee);
             setSuccess("Assigned successfully!");
+            loadProjects();
             loadTasks();
             loadEmployees();
+            setSelectedTask('');
+            setSelectedTaskEmployee('');
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
             setErrors(errorMessages);
@@ -278,8 +283,11 @@ const AdminDashboard = () => {
         try {
             await removeEmployeeFromTask(selectedTask, selectedTaskEmployee);
             setSuccess("Removed successfully!");
+            loadProjects();
             loadTasks();
             loadEmployees();
+            setSelectedTask('');
+            setSelectedTaskEmployee('');
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
             setErrors(errorMessages);
@@ -318,6 +326,7 @@ const AdminDashboard = () => {
             await createProject(projectModel);
             setNewProject("");
             setNewDescription("");
+            setShowCreateProjectForm(false);
             setErrors([]); // Clear any previous errors
             loadProjects();
         } catch (errorMessages) {
@@ -327,7 +336,8 @@ const AdminDashboard = () => {
     };
 
     // Edit project
-    const handleEditProject = (project) => {
+    const handleEditProject = (project) =>
+    {
         setEditProjectId(project.id);
         setEditProjectTitle(project.title);
         setEditProjectDescription(project.description);
@@ -348,10 +358,11 @@ const AdminDashboard = () => {
         try {
             await updateProject(projectModel);
             setEditProjectId("");
-            seteditProjectTitle("");
+            setEditProjectTitle("");
             setEditProjectDescription("");
             setErrors([]);
             loadProjects();
+            loadTasks();
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
             setErrors(errorMessages);
@@ -364,6 +375,7 @@ const AdminDashboard = () => {
             await deleteProject(projectId);
             setErrors([]);
             loadProjects();
+            loadTasks();
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
             setErrors(errorMessages);
@@ -406,6 +418,7 @@ const AdminDashboard = () => {
             await createTask(taskModel);
             setNewTaskTitle("");
             setNewTaskDescription("");
+            setShowCreateTaskForm(false);
             setErrors([]);
             loadTasks();
         } catch (errorMessages) {
@@ -626,8 +639,9 @@ const AdminDashboard = () => {
                                                 onChange={(e) => {
                                                     const file = e.target.files[0];
                                                     if (file) {
+                                                        const previewUrl = URL.createObjectURL(file);
                                                         setNewEmployeeProfilePicture(file);
-                                                        setNewEmployeePreviewUrl(URL.createObjectURL(file));
+                                                        setNewEmployeePreviewUrl(previewUrl);
                                                     }
                                                 }}
                                             />
@@ -719,8 +733,9 @@ const AdminDashboard = () => {
                                             onChange={(e) => {
                                                 const file = e.target.files[0];
                                                 if (file) {
+                                                    const previewUrl = URL.createObjectURL(file);
                                                     setEditEmployeeProfilePicture(file);
-                                                    setEditEmployeePreviewUrl(URL.createObjectURL(file)); 
+                                                    setEditEmployeePreviewUrl(previewUrl);
                                                 }
                                             }}
                                         />
@@ -785,22 +800,19 @@ const AdminDashboard = () => {
                                             <td>{employee.username}</td>
                                             <td>{employee.roles}</td>
                                             <td className="text-center ">
-                                                {!employee.roles.includes(UserRole.Administrator) && (
-                                                    <>
-                                                        <button
-                                                            className="btn btn-outline-success btn-sm me-2"
-                                                            onClick={() => handleEditEmployee(employee)}
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                        <button
-                                                            className="btn btn-outline-danger btn-sm"
-                                                            onClick={() => handleDeleteEmployee(employee.id)}
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    </>
-                                                )}
+                                                <button
+                                                    className="btn btn-outline-success btn-sm me-2"
+                                                    onClick={() => handleEditEmployee(employee)}
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    className="btn btn-outline-danger btn-sm"
+                                                    onClick={() => handleDeleteEmployee(employee.id)}
+                                                    disabled={employee.roles.includes(UserRole.Administrator)}
+                                                >
+                                                    Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     ))}
@@ -898,7 +910,7 @@ const AdminDashboard = () => {
                                     className="form-control"
                                     placeholder="e.g. Internal CRM"
                                     value={editProjectTitle}
-                                    onChange={(e) => seteditProjectTitle(e.target.value)}
+                                    onChange={(e) => setEditProjectTitle(e.target.value)}
                                 />
                             </div>
                             <div className="col-md-5">

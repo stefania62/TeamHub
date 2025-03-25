@@ -56,8 +56,9 @@ public interface ITaskService
     /// Removes the assigned employee from a task.
     /// </summary>
     /// <param name="taskId">The ID of the task to update.</param>
+    /// <param name="employeeId">The ID of the employee to be removed from task.</param>
     /// <returns>A result indicating whether the removal was successful.</returns>
-    Task<Result<bool>> RemoveEmployeeFromTask(int taskId);
+    Task<Result<bool>> RemoveEmployeeFromTask(int taskId, string employeeId);
 
     /// <summary>
     /// Deletes a task.

@@ -60,7 +60,7 @@ public class TasksController : ControllerBase
         return Ok(new { message = "Task updated successfully" });
     }
 
-    [HttpPut("mark-complete/{id}")]
+    [HttpPatch("mark-complete/{id}")]
     [Authorize(Roles = $"{nameof(UserRole.Administrator)},{nameof(UserRole.Employee)}")]
     public async Task<IActionResult> CompleteTask(int id)
     {
@@ -73,7 +73,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-   [Authorize(Roles = nameof(UserRole.Administrator))]
+    [Authorize(Roles = nameof(UserRole.Administrator))]
     public async Task<IActionResult> DeleteTask(int id)
     {
         var result = await _taskService.DeleteTask(id);
@@ -81,7 +81,7 @@ public class TasksController : ControllerBase
         return Ok(new { message = "Task deleted successfully" });
     }
 
-    [HttpPost("{taskId}/assign/{employeeId}")]
+    [HttpPatch("{taskId}/assign/{employeeId}")]
     [Authorize(Roles = $"{nameof(UserRole.Administrator)},{nameof(UserRole.Employee)}")]
     public async Task<IActionResult> AssignEmployeeToTask(int taskId, string employeeId)
     {
@@ -91,12 +91,12 @@ public class TasksController : ControllerBase
         return Ok(new { message = "Employee assigned successfully." });
     }
 
-    [HttpDelete("{taskId}/remove/{employeeId}")]
-   [Authorize(Roles = $"{nameof(UserRole.Administrator)},{nameof(UserRole.Employee)}")]
+    [HttpPatch("{taskId}/remove/{employeeId}")]
+    [Authorize(Roles = $"{nameof(UserRole.Administrator)},{nameof(UserRole.Employee)}")]
     public async Task<IActionResult> RemoveEmployeeFromTask(int taskId, string employeeId)
     {
-        var result = await _taskService.RemoveEmployeeFromTask(taskId);
-        if (!result.Success) return NotFound(new { message = result.ErrorMessage });
+        var result = await _taskService.RemoveEmployeeFromTask(taskId, employeeId);
+        if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
 
         return Ok(new { message = "Employee removed successfully." });
     }

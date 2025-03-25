@@ -68,7 +68,7 @@ const EmployeeDashboard = () => {
     const loadProfile = async () => {
         const data = await getCurrentUserProfile();
         setProfile(data);
-        setVirtualPath(data.virtualPath);
+        setVirtualPath(data.imageVirtualPath);
     };
 
     // Load employees
@@ -88,7 +88,7 @@ const EmployeeDashboard = () => {
             password: profile.password,
             email: profile.email,
             roles: profile.roles,
-            profilePicture: selectedFile
+            imageVirtualPath: selectedFile
         };
 
         try {
@@ -183,6 +183,7 @@ const EmployeeDashboard = () => {
             setNewTaskTitle("");
             setNewTaskDescription("");
             setErrors([]);
+            setShowCreateTaskForm(false);
             loadTasks();
         } catch (errorMessages) {
             console.log("Formatted errors:", errorMessages);
@@ -312,10 +313,10 @@ const EmployeeDashboard = () => {
                         <button className="btn btn-success w-75 mt-3" onClick={handleProfileUpdate}>Update</button>
                     </div>
                     <div className="d-flex flex-column align-items-start w-50 pt-2">
-                        {profile.virtualPath && (
+                        {profile.imageVirtualPath && (
                             <>
                                 <img
-                                    src={`https://localhost:7073${profile.virtualPath}`}
+                                    src={`https://localhost:7073${profile.imageVirtualPath}`}
                                     alt="Profile"
                                     className="img-thumbnail mt-5 ms-5"
                                     style={{ maxWidth: '400px', height: 'auto' }}
@@ -340,13 +341,32 @@ const EmployeeDashboard = () => {
                         </button>
                     </div>
 
+                    {success && (
+                        <div className="alert alert-success rounded-3">
+                            <span className="small">{success}</span>
+                        </div>
+                    )}
+
+                    {/* Error Display */}
+                    {errors?.length > 0 && (
+                        <div className="alert alert-danger rounded-3">
+                            <ul className="mb-0 ps-3">
+                                {errors.map((err, index) => (
+                                    <li key={index} className="small">
+                                        {err}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
                     {/* Create task form */}
                     {showCreateTaskForm && (
                         <div className="card p-4 border shadow-sm bg-light rounded-4 mb-4">
                             <h5 className="text-dark mb-3">Enter Task Details</h5>
                             <div className="row g-3 align-items-center">
                                 <div className="col-md-3">
-                                    <label className="form-label">Task Name</label>
+                                    <label className="form-label">Task Title</label>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -450,24 +470,6 @@ const EmployeeDashboard = () => {
                         </div>
                     )}
 
-                    {success && (
-                        <div className="alert alert-success rounded-3">
-                            <span className="small">{success}</span>
-                        </div>
-                    )}
-
-                    {/* Error Display */}
-                    {errors?.length > 0 && (
-                        <div className="alert alert-danger rounded-3">
-                            <ul className="mb-0 ps-3">
-                                {errors.map((err, index) => (
-                                    <li key={index} className="small">
-                                        {err}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
 
                     <table className="table table-bordered mt-4">
                         <thead>
@@ -568,7 +570,8 @@ const EmployeeDashboard = () => {
                                         onChange={(e) => setSelectedTaskEmployee(e.target.value)}
                                     >
                                         <option value="">-- Select Employee --</option>
-                                        {employees.map((emp) => (
+                                        {employees.filter(emp => emp.email !== profile.email)
+                                            .map((emp) => (
                                             <option key={emp.id} value={emp.id}>
                                                 {emp.fullName} ({emp.email})
                                             </option>
@@ -579,9 +582,9 @@ const EmployeeDashboard = () => {
                                     <button className="btn btn-outline-success" onClick={handleAssignEmployeeToTask}>
                                         ➕ Assign
                                     </button>
-                                    <button className="btn btn-outline-danger" onClick={handleRemoveEmployeeFromTask}>
-                                        ➖ Remove
-                                    </button>
+                                    {/*<button className="btn btn-outline-danger" onClick={handleRemoveEmployeeFromTask}>*/}
+                                    {/*    ➖ Remove*/}
+                                    {/*</button>*/}
                                 </div>
                             </div>
                         </div>

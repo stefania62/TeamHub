@@ -193,7 +193,7 @@ public class TaskService : ITaskService
             if (!isEmployeeInProject)
             {
                 _logger.LogWarning("Employee {EmployeeId} is not part of project {ProjectId}", employeeId, task.ProjectId);
-                return Result<bool>.Fail("Employee is not part of the project.");
+                return Result<bool>.Fail("Employee is not part of the project for this task.");
             }
 
             task.AssignedToId = employeeId;
@@ -210,7 +210,7 @@ public class TaskService : ITaskService
     }
 
     ///<inheritdoc cref="ITaskService.RemoveEmployeeFromTask"/>
-    public async Task<Result<bool>> RemoveEmployeeFromTask(int taskId)
+    public async Task<Result<bool>> RemoveEmployeeFromTask(int taskId, string employeeId)
     {
         try
         {
@@ -219,6 +219,16 @@ public class TaskService : ITaskService
             {
                 _logger.LogWarning("Task {TaskId} not found for unassignment.", taskId);
                 return Result<bool>.Fail("Task not found.");
+            }
+
+            if (string.IsNullOrEmpty(task.AssignedToId))
+            {
+                return Result<bool>.Fail("Task does not have any employee assigned.");
+            }
+
+            if (task.AssignedToId != employeeId)
+            {
+                return Result<bool>.Fail("The employee selected does not match to the assigned employee for this task.");
             }
 
             task.AssignedToId = null;

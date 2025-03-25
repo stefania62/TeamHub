@@ -151,7 +151,7 @@ public class ProjectService : IProjectService
             {
                 ProjectId = projectId,
                 EmployeeId = employeeId,
-                UpdatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow
             });
 
             await _context.SaveChangesAsync();
@@ -180,7 +180,6 @@ public class ProjectService : IProjectService
                 return Result<bool>.Fail("Employee is not part of this project.");
             }
 
-            projectEmployee.UpdatedAt = DateTime.UtcNow;
             _context.ProjectEmployees.Remove(projectEmployee);
             await _context.SaveChangesAsync();
 
