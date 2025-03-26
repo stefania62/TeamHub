@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"   # for apps to connect
+      - "15672:15672" # for web UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "5000:8080"
+    depends_on:
+      - rabbitmq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    depends_on:
+      - rabbitmq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    ports:
+      - "3000:80"
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.tests

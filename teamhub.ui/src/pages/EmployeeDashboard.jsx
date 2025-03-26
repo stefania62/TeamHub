@@ -316,7 +316,7 @@ const EmployeeDashboard = () => {
                         {profile.imageVirtualPath && (
                             <>
                                 <img
-                                    src={`https://localhost:7073${profile.imageVirtualPath}`}
+                                    src={`http://localhost:5000${profile.imageVirtualPath}`}
                                     alt="Profile"
                                     className="img-thumbnail mt-5 ms-5"
                                     style={{ maxWidth: '400px', height: 'auto' }}

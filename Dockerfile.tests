@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS test
+
+WORKDIR /app
+
+COPY . .
+
+RUN dotnet restore TeamHub.sln
+RUN dotnet build TeamHub.sln
+RUN dotnet test TeamHub.Tests/TeamHub.Tests.csproj --no-build --verbosity normal

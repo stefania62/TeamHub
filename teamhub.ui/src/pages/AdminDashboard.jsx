@@ -154,7 +154,7 @@ const AdminDashboard = () => {
         setEditEmployeeVirtualPath(employee.imageVirtualPath);
         if (employee.imageVirtualPath) {
             setEditEmployeeVirtualPath(employee.imageVirtualPath);
-            setEditEmployeePreviewUrl(`https://localhost:7073${employee.imageVirtualPath}`);
+            setEditEmployeePreviewUrl(`http://localhost:5000${employee.imageVirtualPath}`);
         } else {
             setEditEmployeeVirtualPath(null);
             setEditEmployeePreviewUrl(null);
@@ -744,7 +744,7 @@ const AdminDashboard = () => {
                                     {(editEmployeePreviewUrl || editEmployeeVirtualPath) && (
                                         <div className="mt-2">
                                             <img
-                                                src={editEmployeePreviewUrl || `https://localhost:7073${editEmployeeVirtualPath}`}
+                                                src={editEmployeePreviewUrl || `http://localhost:5000${editEmployeeVirtualPath}`}
                                                 alt="Profile"
                                                 className="img-thumbnail"
                                                 style={{ maxWidth: "200px", height: "auto" }}

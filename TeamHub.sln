@@ -17,11 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Application", "Team
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Domain", "TeamHub.Domain", "{C881BDA4-54CE-4DD5-B526-67C68CF638F9}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "teamhub.ui", "TeamHub.UI\teamhub.ui.esproj", "{9C31922B-0794-4567-B191-32F35BCEF49A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Infrastructure", "TeamHub.Infrastructure", "{5AB9D9DE-E9A9-45EA-9A79-E43B055B2CF6}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.UI", "TeamHub.UI", "{5C8AC467-3F88-4E4E-9036-4EE648A57B2E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Common", "TeamHub.Common\TeamHub.Common.csproj", "{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}"
 EndProject
@@ -40,6 +36,21 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Tests", "TeamHub.Tests", "{ACC2A17B-ACB7-4FA5-8C51-E52F1D55FFFB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Tests", "TeamHub.Tests\TeamHub.Tests.csproj", "{3362CD6D-C710-448D-9D23-917113681311}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{37EE4270-8067-489E-9F9C-98D7DBD1918B}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile.worker = Dockerfile.worker
+		Dockerfile.api = Dockerfile.api
+		Dockerfile.tests = Dockerfile.tests
+		Dockerfile.ui = Dockerfile.ui
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AA2648E-4B16-48D6-92EB-237565A7CB7A}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+	EndProjectSection
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "teamhub.ui", "teamhub.ui\teamhub.ui.esproj", "{BF86424A-1513-4DF2-8B4C-54E5DF0A1559}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,12 +74,6 @@ Global
 		{BB369CE8-1132-46F5-BB84-383712972E5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB369CE8-1132-46F5-BB84-383712972E5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB369CE8-1132-46F5-BB84-383712972E5B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C31922B-0794-4567-B191-32F35BCEF49A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C31922B-0794-4567-B191-32F35BCEF49A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C31922B-0794-4567-B191-32F35BCEF49A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{9C31922B-0794-4567-B191-32F35BCEF49A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C31922B-0794-4567-B191-32F35BCEF49A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C31922B-0794-4567-B191-32F35BCEF49A}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -89,6 +94,12 @@ Global
 		{3362CD6D-C710-448D-9D23-917113681311}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3362CD6D-C710-448D-9D23-917113681311}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3362CD6D-C710-448D-9D23-917113681311}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF86424A-1513-4DF2-8B4C-54E5DF0A1559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF86424A-1513-4DF2-8B4C-54E5DF0A1559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF86424A-1513-4DF2-8B4C-54E5DF0A1559}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BF86424A-1513-4DF2-8B4C-54E5DF0A1559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF86424A-1513-4DF2-8B4C-54E5DF0A1559}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF86424A-1513-4DF2-8B4C-54E5DF0A1559}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,7 +109,6 @@ Global
 		{8EF646AB-7606-46FB-81AA-472709A1DD3D} = {C881BDA4-54CE-4DD5-B526-67C68CF638F9}
 		{6ED0AE69-47E3-4DFC-96EE-0FBD79B410D5} = {5AB9D9DE-E9A9-45EA-9A79-E43B055B2CF6}
 		{BB369CE8-1132-46F5-BB84-383712972E5B} = {3A4E81BB-5604-421E-AEC7-97DB8A1B0D96}
-		{9C31922B-0794-4567-B191-32F35BCEF49A} = {5C8AC467-3F88-4E4E-9036-4EE648A57B2E}
 		{9B6DB3C3-DDB8-479C-BFF9-C230B52E460D} = {AC9FB29C-CC95-4032-BDB9-D890997C101A}
 		{97319AE0-3332-4587-A99E-F285F9DF6E20} = {D7921B77-AFB3-42AE-9C8D-6CA0F127BF84}
 		{3064BB91-24B7-4E63-A6D4-0B03E0F4C352} = {5AB9D9DE-E9A9-45EA-9A79-E43B055B2CF6}
