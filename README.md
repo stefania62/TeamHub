@@ -56,8 +56,14 @@ To run TeamHub locally, ensure you have the following tools installed:
 ## ⚙️ Backend Setup & Run (Manual)
 1. Clone the repo and open in **Visual Studio 2022**
 2. Update `appsettings.json` → `DefaultConnection` with your SQL Server
-3. Run EF Core migration: Update-Database
-4. Start the API: dotnet run --project TeamHub.API
+3. Create SQL login and database manually before applying migrations:
+        CREATE LOGIN teamhub_user1 WITH PASSWORD = 'TeamHub123$';
+        CREATE DATABASE TeamHub;
+        USE TeamHub;
+        CREATE USER teamhub_user1 FOR LOGIN teamhub_user1;
+        ALTER ROLE db_owner ADD MEMBER teamhub_user1;
+4. Run EF Core migration: Update-Database
+5. Start the API: dotnet run --project TeamHub.API
 
 ## ⚙️ Frontend Setup & Run (Manual)
 cd TeamHub.UI
@@ -71,7 +77,12 @@ npm run dev
 - Make sure CORS, UI base URL, and API base URL match across TeamHub.API, TeamHub.UI, and launch settings.
 - Update RabbitMQ host to localhost in appsettings.json when not using Docker:
 
-<pre> ```json "RabbitMQ": { "Host": "localhost", "Username": "guest", "Password": "guest" } ``` </pre>
+ "RabbitMQ": 
+  { 
+  "Host": "localhost", 
+  "Username": "guest", 
+  "Password": "guest" 
+  } 
 
 - Ensure your local database is properly configured and accessible with correct SQL user credentials.
 (Check out the settings changes in the last commit)
