@@ -13,6 +13,7 @@ Built with **ASP.NET Core 8**, **Entity Framework Core** and **ReactJS**, TeamHu
 **TeamHub.Contracts** – Shared message contracts for events
 **TeamHub.Worker** – Background worker 
 **TeamHub.UI** - The ReactJS frontend interface
+**TeamHub.Tests** - xUnit-based Unit Tests
 
 ---
 
@@ -30,6 +31,7 @@ Built with **ASP.NET Core 8**, **Entity Framework Core** and **ReactJS**, TeamHu
 - Role-based React UI with dashboards
 - Exception middleware
 - Event-driven email notifications using RabbitMQ and MassTransit
+- Unit testing with xUnit, Moq & EF Core InMemory
 
 ---
 
@@ -43,6 +45,7 @@ To run TeamHub locally, ensure you have the following tools installed:
 - Microsoft SQL Server 2019/2022
 - SQL Server Management Studio 19 (SSMS)
 - Microsoft Visual Studio 2022
+- RabbitMQ server
 
 ---
 
