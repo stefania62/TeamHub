@@ -17,9 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Application", "Team
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Domain", "TeamHub.Domain", "{C881BDA4-54CE-4DD5-B526-67C68CF638F9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Infrastructure", "TeamHub.Infrastructure", "{5AB9D9DE-E9A9-45EA-9A79-E43B055B2CF6}"
-EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "teamhub.ui", "TeamHub.UI\teamhub.ui.esproj", "{9C31922B-0794-4567-B191-32F35BCEF49A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Infrastructure", "TeamHub.Infrastructure", "{5AB9D9DE-E9A9-45EA-9A79-E43B055B2CF6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.UI", "TeamHub.UI", "{5C8AC467-3F88-4E4E-9036-4EE648A57B2E}"
 EndProject
@@ -31,15 +31,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Worker", "TeamHub.W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Worker", "TeamHub.Worker\TeamHub.Worker.csproj", "{97319AE0-3332-4587-A99E-F285F9DF6E20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamHub.Infrastructure.Net", "TeamHub.Infrastructure.Net\TeamHub.Infrastructure.Net.csproj", "{3064BB91-24B7-4E63-A6D4-0B03E0F4C352}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Infrastructure.Net", "TeamHub.Infrastructure.Net\TeamHub.Infrastructure.Net.csproj", "{3064BB91-24B7-4E63-A6D4-0B03E0F4C352}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Contract", "TeamHub.Contract", "{2222DA86-B1C2-476A-A6B0-5812672ABAE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamHub.Contract", "TeamHub.Contract\TeamHub.Contract.csproj", "{319CFCB4-8D51-4162-AFFC-CC8EC53BB766}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Contract", "TeamHub.Contract\TeamHub.Contract.csproj", "{319CFCB4-8D51-4162-AFFC-CC8EC53BB766}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamHub.Tests", "TeamHub.Tests", "{ACC2A17B-ACB7-4FA5-8C51-E52F1D55FFFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamHub.Tests", "TeamHub.Tests\TeamHub.Tests.csproj", "{3362CD6D-C710-448D-9D23-917113681311}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Tests", "TeamHub.Tests\TeamHub.Tests.csproj", "{3362CD6D-C710-448D-9D23-917113681311}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
