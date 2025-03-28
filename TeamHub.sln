@@ -39,15 +39,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamHub.Tests", "TeamHub.Te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{37EE4270-8067-489E-9F9C-98D7DBD1918B}"
 	ProjectSection(SolutionItems) = preProject
-		Dockerfile.worker = Dockerfile.worker
 		Dockerfile.api = Dockerfile.api
 		Dockerfile.tests = Dockerfile.tests
 		Dockerfile.ui = Dockerfile.ui
+		Dockerfile.worker = Dockerfile.worker
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AA2648E-4B16-48D6-92EB-237565A7CB7A}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yaml = docker-compose.yaml
+		default.conf = default.conf
 	EndProjectSection
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "teamhub.ui", "teamhub.ui\teamhub.ui.esproj", "{BF86424A-1513-4DF2-8B4C-54E5DF0A1559}"

@@ -72,15 +72,6 @@ public class TasksController : ControllerBase
         return Ok(new { message = "Task marked as completed" });
     }
 
-    [HttpDelete("{id}")]
-    [Authorize(Roles = nameof(UserRole.Administrator))]
-    public async Task<IActionResult> DeleteTask(int id)
-    {
-        var result = await _taskService.DeleteTask(id);
-        if (!result.Success) return NotFound(new { message = result.ErrorMessage });
-        return Ok(new { message = "Task deleted successfully" });
-    }
-
     [HttpPatch("{taskId}/assign/{employeeId}")]
     [Authorize(Roles = $"{nameof(UserRole.Administrator)},{nameof(UserRole.Employee)}")]
     public async Task<IActionResult> AssignEmployeeToTask(int taskId, string employeeId)
@@ -99,5 +90,14 @@ public class TasksController : ControllerBase
         if (!result.Success) return BadRequest(new { message = result.ErrorMessage });
 
         return Ok(new { message = "Employee removed successfully." });
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = nameof(UserRole.Administrator))]
+    public async Task<IActionResult> DeleteTask(int id)
+    {
+        var result = await _taskService.DeleteTask(id);
+        if (!result.Success) return NotFound(new { message = result.ErrorMessage });
+        return Ok(new { message = "Task deleted successfully" });
     }
 }

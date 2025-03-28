@@ -187,8 +187,8 @@ export const updateProfile = async (profileModel) => {
         }
         profileModel.roles?.forEach(role => formData.append("Roles", role));
 
-        if (profileModel.imageVirtualPath) {
-            formData.append("ImageVirtualPath", profileModel.imageVirtualPath);
+        if (profileModel.file) {
+            formData.append("File", profileModel.file);
         }
 
         const response = await axios.put(

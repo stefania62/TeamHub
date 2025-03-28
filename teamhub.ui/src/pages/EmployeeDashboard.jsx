@@ -88,7 +88,7 @@ const EmployeeDashboard = () => {
             password: profile.password,
             email: profile.email,
             roles: profile.roles,
-            imageVirtualPath: selectedFile
+            file: selectedFile
         };
 
         try {
