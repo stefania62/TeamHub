@@ -131,6 +131,20 @@ public class TaskService : ITaskService
                 return Result<bool>.Fail("Not authorized or task not found.");
             }
 
+            if (!string.IsNullOrEmpty(task.AssignedToId))
+            {
+                var isAssignedUserPartOfProject = await _context.ProjectEmployees
+                    .AnyAsync(pe =>
+                        pe.EmployeeId == task.AssignedToId &&
+                        pe.ProjectId == model.ProjectId);
+
+                if (!isAssignedUserPartOfProject)
+                {
+                    _logger.LogWarning("Task assigned user is not part of project {ProjectId} for task {TaskId}", model.ProjectId, taskId);
+                    return Result<bool>.Fail("Task assigned user is not part of the selected project.");
+                }
+            }
+
             task.Title = model.Title;
             task.Description = model.Description;
             task.ProjectId = model.ProjectId;
